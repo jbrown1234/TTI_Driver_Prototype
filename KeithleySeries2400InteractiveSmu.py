@@ -62,11 +62,22 @@ class KeithleySeries2400InteractiveSmu():
         return
 
     def available(self, functionality):
-        """This function checks for the presence of specific instrument functionality."""
+        """
+        This function checks for the presence of specific instrument functionality.
+
+        :param functionality:
+        :return:
+        """
         self.instrumentcomms.write(f"presence = available({functionality})")
 
     def beep(self, frequency, duration):
-        """This function generates an audible tone."""
+        """
+        This function generates an audible tone.
+
+        :param frequency:
+        :param duration:
+        :return:
+        """
         self.instrumentcomms.write(f"beeper.beep({frequency},{duration})")
 
     class Buffer:
@@ -76,13 +87,13 @@ class KeithleySeries2400InteractiveSmu():
         #@property
         def capacity(self, buffername="defbuffer1", buffer_capacity=None):
             """
-            This attribute gets or sets the number of readings a buffer can store.
-            Parameters:
-                buffername (str) = The name of the reading buffer, which may be a default buffer (defbuffer1 or \
-                defbuffer2) or a user-defined buffer
+            This attribute gets or sets the number of readings a buffer can store. When the
 
-                buffer_capacity (int) = The maximum number of readings the buffer can store; set to 0 to maximize \
+            :param buffername: (str) The name of the reading buffer, which may be a default buffer (defbuffer1 or \
+                defbuffer2) or a user-defined buffer
+            :param buffer_capacity: (int) The maximum number of readings the buffer can store; set to 0 to maximize \
                 the buffer size
+            :return:
             """
             if buffer_capacity is None:
                 self.mycomms.write(f"cap = {buffername}.capacity")
@@ -277,7 +288,7 @@ class KeithleySeries2400InteractiveSmu():
 
         class VLimit:
             def __init__(self):
-                self.mycoms = None
+                self.mycomms = None
 
             @property
             def level(self):
@@ -300,6 +311,7 @@ class KeithleySeries2400InteractiveSmu():
         def __init__(self):
             self.range = None
             self.mycomms = None
+            self.autozero = self.AutoZero()
             self.configlist = self.ConfigList()
             self.filter = self.Filter()
             self.limit = self.Limit()
@@ -307,16 +319,311 @@ class KeithleySeries2400InteractiveSmu():
             self.rel = self.Rel()
 
         def update_comms(self):
-            """This function is used to ensure lower level consumer classes tied to the driver are updated to promote instrument communications."""
-            self.configlist.mycoms = self.mycomms
-            self.filter.mycoms = self.mycomms
-            self.limit.mycoms = self.mycomms
-            self.math.mycoms = self.mycomms
-            self.rel.mycoms = self.mycomms
+            """
+            This function is used to ensure lower level consumer classes tied to the driver are updated to promote \
+            instrument communications.
+
+            :return:
+            """
+            self.autozero.mycomms = self.mycomms
+            self.configlist.mycomms = self.mycomms
+            self.filter.mycomms = self.mycomms
+            self.limit.mycomms = self.mycomms
+            self.math.mycomms = self.mycomms
+            self.rel.mycomms = self.mycomms
 
         @property
+        def autorange(self):
+            """
+            This attribute determines if the measurement range is set manually or automatically for the selected \
+            measure function.
+
+            :return: Either 0 (smu.OFF) or 1 (smu.ON)
+            """
+            arange = None
+            self.mycomms.write("autorange = smu.measure.autorange")
+            response = self.mycomms.query("print(autorange)").rstrip()
+            if "ON" in response:
+                arange = smuconst.ON
+            else:
+                arange = smuconst.OFF
+            return arange
+
+        @autorange.setter
+        def autorange(self, value):
+            """
+            This attribute determines if the measurement range is set manually or automatically for the selected \
+            measure function.
+
+            :param value: Either 1 (ON) or 0 (OFF)
+            :return:
+            """
+            if value == smuconst.ON:
+                self.mycomms.write("smu.measure.autorange=smu.ON")
+            else:
+                self.mycomms.write("smu.measure.autorange=smu.OFF")
+
+        @property
+        def autorangehigh(self):
+            """
+            When autorange is selected, this attribute represents the highest measurement range that is used when the \
+            instrument selects the measurement range automatically.
+
+            :return: highrange (float) - a value representative of a valid instrument range
+            """
+            highrange = None
+            self.mycomms.write("highRange = smu.measure.autorangehigh")
+            highrange = float(self.mycomms.query("print(highRange)").rstrip())
+            return highrange
+
+        @autorangehigh.setter
+        def autorangehigh(self, range_value):
+            """
+            When autorange is selected, this attribute represents the highest measurement range that is used when the \
+            instrument selects the measurement range automatically.
+
+            :param range_value: (float) A value representative of a valid instrument range
+            :return:
+            """
+            self.mycomms.write(f"smu.measure.autorangehigh={range_value}")
+
+        @property
+        def autorangelow(self):
+            """
+            When autorange is selected, this attribute represents the lowest measurement range that is used when the \
+            instrument selects the measurement range automatically.
+
+            :return: lowrange (float) - a value representative of a valid instrument range
+            """
+            lowrange = None
+            self.mycomms.write("lowRange = smu.measure.autorangelow")
+            highrange = float(self.mycomms.query("print(lowRange)").rstrip())
+            return lowrange
+
+        @autorangelow.setter
+        def autorangelow(self, range_value):
+            """
+            When autorange is selected, this attribute represents the lowest measurement range that is used when the \
+            instrument selects the measurement range automatically.
+
+            :param range_value: (float) A value representative of a valid instrument range
+            :return:
+            """
+            self.mycomms.write(f"smu.measure.autorangehigh={range_value}")
+
+        @property
+        def autorangerebound(self):
+            """
+            This attribute determines if the instrument restores the measure range to match the limit range after \
+            making a measurement.
+
+            :return: Either 1 (ON) or 0 (OFF)
+            """
+            self.mycomms.write("state = smu.measure.autorangerebound")
+            response = self.mycomms.query("print(state)").rstrip()
+            retconstval = None
+            if "ON" in response:
+                retconstval = smuconst.ON
+            else:
+                retconstval = smuconst.OFF
+            return retconstval
+
+        @autorangerebound.setter
+        def autorangerebound(self, state):
+            """
+            This attribute determines if the instrument restores the measure range to match the limit range after \
+            making a measurement.
+
+            :param state: Either 1 (ON) or 0 (OFF)
+            :return:
+            """
+            if state == smuconst.ON:
+                self.mycomms.write("smu.measure.autorangerebound=smu.ON")
+            else:
+                self.mycomms.write("smu.measure.autorangerebound=smu.OFF")
+
+        class AutoZero:
+            def __init__(self):
+                self.mycomms = None
+
+            @property
+            def enable(self):
+                """
+                This attribute enables or disables automatic updates to the internal reference measurements (autozero) \
+                of the instrument.
+
+                :return: Either 1 (ON) or 0 (OFF)
+                """
+                self.mycomms.write("state = smu.measure.autorange.enable")
+                response = self.mycomms.query("print(state)").rstrip()
+                retconstval = None
+                if "ON" in response:
+                    retconstval = smuconst.ON
+                else:
+                    retconstval = smuconst.OFF
+                return retconstval
+
+            @enable.setter
+            def enable(self, state):
+                """
+                This attribute enables or disables automatic updates to the internal reference measurements (autozero) \
+                of the instrument.
+
+                :param state: Either 1 (ON) or 0 (OFF)
+                :return:
+                """
+                if state == smuconst.ON:
+                    self.mycomms.write("smu.measure.autorange.enable=smu.ON")
+                else:
+                    self.mycomms.write("smu.measure.autorange.enable=smu.OFF")
+
+            def once(self):
+                """
+                This function causes the instrument to refresh the reference and zero measurements once.
+
+                :return:
+                """
+                self.mycomms.write("smu.measure.autorange.once()")
+
+        class ConfigList:
+            def __init__(self):
+                self.mycomms = None
+
+            def catalog(self):
+                """
+                This function returns the name of one measure configuration list that is stored on the instrument.
+
+                :return: The name of a configuration list.
+                """
+                self.mycomms.query("print(smu.measure.configlist.catalog())")
+
+            def create(self, list_name):
+                """
+                This function creates an empty measure configuration list.
+
+                :param list_name:
+                :return:
+                """
+                self.mycomms.write(f"smu.measure.configlist.create({list_name}))")
+
+            def delete(self, list_name, index=None):
+                """
+                This function deletes a measure configuration list.
+
+                :param list_name:
+                :param index:
+                :return:
+                """
+                if index == None:
+                    self.mycomms.write(f"smu.measure.configlist.delete(\"{list_name}\"))")
+                else:
+                    self.mycomms.write(f"smu.measure.configlist.delete(\"{list_name}\", {index}))")
+
+            def query(self, list_name, index, field_separator=None):
+                """
+                This function returns a list of TSP commands and parameter settings that are stored in the specified \
+                configuration index
+
+                :param list_name: A string that represents the name of a measure configuration list
+                :param index: A number that defines a specific configuration index in the configuration list
+                :param field_separator: String that represents the separator for the data; use one of the following,
+                                * Comma (default): ,
+                                * Semicolon: ;
+                                * New line: \n
+
+                :return:
+                """
+                if field_separator == None:
+                    self.mycomms.query(f"print(smu.measure.configlist.query(\"{list_name}\", {index}))")
+                else:
+                    self.mycomms.query(f"print(smu.measure.configlist.query(\"{list_name}\", {index}, {field_separator}))")
+
+            def recall(self, list_name, index=None, source_list_name=None, source_index=None):
+                """
+                This function recalls a configuration index in a measure configuration list and an optional source \
+                configuration list.
+
+                :param list_name:
+                :param index:
+                :param source_list_name:
+                :param source_index:
+                :return:
+                """
+                if source_index == None:
+                    if index == None:
+                        self.mycomms.write(f"smu.measure.configlist.recall(\"{list_name}\")")
+                    else:
+                        self.mycomms.write(f"smu.measure.configlist.recall(\"{list_name}\", {index})")
+                else:
+                    if source_index == None:
+                        self.mycomms.write(
+                            f"smu.measure.configlist.recall(\"{list_name}\", {index}),\"{source_list_name}\")")
+                    else:
+                        self.mycomms.write(
+                            f"smu.measure.configlist.recall(\"{list_name}\", {index}),\"{source_list_name}\","
+                            f" {source_index})")
+
+            def size(self, list_name):
+                """
+                This function returns the size (number of configuration indexes) of a measure configuration list.
+
+                :param list_name:
+                :return:
+                """
+                self.mycomms.write(f"index_count = smu.measure.configlist.zier(\"{list_name}\")")
+                return int(self.mycomms.query("print(index_count)"))
+
+            def store(self, list_name, index=None):
+                """
+                This function stores the active measure settings into the named configuration list.
+
+                :param list_name:
+                :param index:
+                :return:
+                """
+                if index == None:
+                    self.mycomms.write(f"smu.measure.configlist.store(\"{list_name}\")")
+                else:
+                    self.mycomms.write(f"smu.measure.configlist.store(\"{list_name}\", {index})")
+
+            def storefunc(self, list_name, function, index=None):
+                """
+                This function allows you to store the settings for a measure function into a measure configuration \
+                list whether or not the function is active.
+
+                :param list_name:
+                :param function:
+                :param index:
+                :return:
+                """
+                function_str = None
+                if function == smuconst.FUNC_DC_VOLTAGE:
+                    function_str = "smu.FUNC_DC_VOLTAGE"
+                elif function == smuconst.FUNC_DC_CURRENT:
+                    function_str = "smu.FUNC_DC_VOLTAGE"
+                elif function == smuconst.FUNC_DC_RESISTANCE:
+                    function_str = "smu.FUNC_DC_RESISTANCE"
+
+                if index == None:
+                    self.mycomms.write(f"smu.measure.configlist.storefunc(\"{list_name}\", {function_str})")
+                else:
+                    self.mycomms.write(f"smu.measure.configlist.storefunc(\"{list_name}\", {function_str}, {index})")
+
+        @property
+        def count(self):
+            return 0
+
+        @count.setter
+        def count(self, number):
+            print(0)
+            
+        @property
         def function(self):
-            """This attribute contains the measure function, which can be voltage or current."""
+            """
+            This attribute contains the measure function, which can be voltage or current.
+
+            :return: Either 0 (FUNC_DC_VOLTAGE) or 1 (FUNC_DC_CURRENT)
+            """
             self.mycomms.write("measfunc = smu.measure.func")
             response = self.mycomms.query("print(measfunc)").rstrip()
             retconstval = None
@@ -328,7 +635,12 @@ class KeithleySeries2400InteractiveSmu():
 
         @function.setter
         def function(self, func):
-            """This attribute contains the measure function, which can be voltage or current."""
+            """
+            This attribute contains the measure function, which can be voltage or current.
+
+            :param func: Either 0 (FUNC_DC_VOLTAGE) or 1 (FUNC_DC_CURRENT)
+            :return:
+            """
             if func == smuconst.FUNC_DC_VOLTAGE:
                 self.mycomms.write("smu.measure.func = smu.FUNC_DC_VOLTAGE")
                 # print()
@@ -336,26 +648,50 @@ class KeithleySeries2400InteractiveSmu():
                 self.mycomms.write("smu.measure.func = smu.FUNC_DC_CURRENT")
                 # print()
 
-        class ConfigList:
-            def __init__(self):
-                self.mycoms = None
-
         class Filter:
             def __init__(self):
-                self.mycoms = None
+                self.mycomms = None
 
         class Limit:
             def __init__(self):
-                self.mycoms = None
+                self.mycomms = None
 
         class Math:
             def __init__(self):
-                self.mycoms = None
+                self.mycomms = None
 
         class Rel:
             def __init__(self):
-                self.mycoms = None
+                self.mycomms = None
+
+    @property
+    def terminals(self):
+        """
+        This attribute describes which set of input and output terminals the instrument is using
+
+        :return: Either 0 (TERMINALS_FRONT) or 1 (TERMINALS_REAR)
+        """
+        term = None
+        self.instrumentcomms.write("terminals = smu.terminals")
+        if "FRONT" in self.instrumentcomms.query("print(terminals)").rstrip():
+            term = smuconst.TERMINALS_FRONT
+        else:
+            term = smuconst.TERMINALS_REAR
+        return term
+
+    @terminals.setter
+    def terminals(self, terminals):
+        """
+        This attribute describes which set of input and output terminals the instrument is using
+
+        :param terminals: Either 0 (TERMINALS_FRONT) or 1 (TERMINALS_REAR)
+        :return: None
+        """
+        if terminals == smuconst.TERMINALS_FRONT:
+            self.instrumentcomms.write("smu.terminals=smu.TERMINALS_FRONT")
+        else:
+            self.instrumentcomms.write("smu.terminals=smu.TERMINALS_REAR")
 
     class TriggerConfiguration:
         def __init__(self):
-            self.temp = None
+            self.mycomms = None

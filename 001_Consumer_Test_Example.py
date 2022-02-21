@@ -35,8 +35,9 @@ mysmu.buffer.capacity("defbuffer1", 25)
 print(mysmu.buffer.capacity("defbuffer1"))
 var = mysmu.buffer.capacity()
 mysmu.measure.function = smuconst.FUNC_DC_CURRENT
+mysmu.terminals = smuconst.TERMINALS_REAR
 
-smu.terminals = smu.TERMINALS_REAR
+
 smu.measure.autorange = smu.ON
 smu.measure.nplc = 1
 
