@@ -36,12 +36,11 @@ print(mysmu.buffer.capacity("defbuffer1"))
 var = mysmu.buffer.capacity()
 mysmu.measure.function = smuconst.FUNC_DC_CURRENT
 mysmu.terminals = smuconst.TERMINALS_REAR
-
-
-smu.measure.autorange = smu.ON
-smu.measure.nplc = 1
+mysmu.measure.autorange = smuconst.ON
+mysmu.measure.nplc = 1.0
 
 # Turn on the output and initiate readings.
+
 smu.source.output = smu.ON
 trigger.model.load("DurationLoop", 60, 0.2)
 trigger.model.initiate()
