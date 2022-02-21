@@ -611,12 +611,48 @@ class KeithleySeries2400InteractiveSmu():
 
         @property
         def count(self):
-            return 0
+            """
+            This attribute gets the number of measurements to make when a measurement is requested.
+
+            :return: count
+            """
+            self.mycomms.write("count=smu.measure.count")
+            count = int(self.mycomms.query("print(count)").rstrip())
+            return count
 
         @count.setter
-        def count(self, number):
-            print(0)
+        def count(self, count):
+            """
+            This attribute sets the number of measurements to make when a measurement is requested.
+
+            :param count:
+            :return:
+            """
+            self.mycomms.write(f"smu.measure.count={count}")
+
+        @property
+        def displaydigits(self):
+            """
+            This attribute determines the number of digits that are displayed for measurements on the front panel \
+            for the selected function.
             
+            :return: 
+            """""
+            self.mycomms.write("digits=smu.measure.displaydigits")
+            digits = int(self.mycomms.query("print(digits)").rstrip())
+            return digits
+
+        @displaydigits.setter
+        def displaydigits(self, digits):
+            """
+            This attribute determines the number of digits that are displayed for measurements on the front panel \
+            for the selected function.
+
+            :param digits:
+            :return:
+            """
+            self.mycomms.write(f"smu.measure.displaydigits={digits}")
+
         @property
         def function(self):
             """
@@ -646,19 +682,254 @@ class KeithleySeries2400InteractiveSmu():
                 # print()
             else:
                 self.mycomms.write("smu.measure.func = smu.FUNC_DC_CURRENT")
-                # print()
 
         class Filter:
             def __init__(self):
                 self.mycomms = None
 
+            @property
+            def fcount(self):
+                """
+                This attribute sets the number of measurements that are averaged when filtering is enabled.
+
+                :return: count
+                """
+                self.mycomms.write("filterCount=smu.measure.filter.count")
+                count = int(self.mycomms.query("print(filterCount)").rstrip())
+                return count
+
+            @fcount.setter
+            def fcount(self, count):
+                """
+                This attribute sets the number of measurements that are averaged when filtering is enabled.
+
+                :param count:
+                :return:
+                """
+                self.mycomms.write(f"smu.measure.filter.count={count}")
+
+            @property
+            def enable(self):
+                """
+                This attribute enables or disables the averaging filter for the selected measurement function.
+
+                :return: Either 0 (OFF) or 1 (ON)
+                """
+                self.mycomms.write("filterState = smu.measure.filter.enable")
+                response = self.mycomms.query("print(filterState)").rstrip()
+                retconstval = None
+                if "OFF" in response:
+                    retconstval = smuconst.OFF
+                else:
+                    retconstval = smuconst.ON
+                return retconstval
+
+            @enable.setter
+            def enable(self, state):
+                """
+                This attribute enables or disables the averaging filter for the selected measurement function.
+
+                :param state: Either 0 (OFF) or 1 (ON)
+                :return:
+                """
+                if state == smuconst.OFF:
+                    self.mycomms.write("smu.measure.filter.enable=smu.OFF")
+                else:
+                    self.mycomms.write("smu.measure.filter.enable=smu.ON")
+
+            @property
+            def type(self):
+                """
+                This attribute gets the type of averaging filter that is used for the selected measure function when \
+                the measurement filter is enabled.
+
+                :return:
+                """
+                self.mycomms.write("filterType = smu.measure.filter.type")
+                filtertype = self.mycomms.query("print(filterType)").rstrip()
+                retconstval = None
+                if "MOVING" in filtertype:
+                    retconstval = smuconst.FILTER_MOVING_AVG
+                else:
+                    retconstval = smuconst.FILTER_REPEAT_AVG
+                return retconstval
+
+            @type.setter
+            def type(self, filtertype):
+                """
+                This attribute sets the type of averaging filter that is used for the selected measure function when \
+                the measurement filter is enabled.
+
+                :param filtertype:
+                :return:
+                """
+                if filtertype == smuconst.FILTER_MOVING_AVG:
+                    self.mycomms.write("smu.measure.filter.type=smu.FILTER_MOVING_AVG")
+                else:
+                    self.mycomms.write("smu.measure.filter.enable=smu.FILTER_REPEAT_AVG")
+
         class Limit:
             def __init__(self):
                 self.mycomms = None
 
+            def audible(self, limit_number, state=None):
+                """
+                This attribute determines if the instrument beeper sounds when a limit test passes or fails.
+
+                :param limit_number: Either 1 or 2
+                :param state: Either 0 (AUDIBLE_NONE), 1 (AUDIBLE_FAIL), or 2 (AUDIBLE_PASS)
+                :return: When state is not None, this function is used to return the present audible limit setting
+                """
+                retconstval = None
+
+                if state is None:
+                    self.mycomms.write(f"state=smu.measure.limit[{limit_number}].audible")
+                    audible = self.mycomms.query("print(state)").rstrip()
+                    if "NONE" in audible:
+                        retconstval = smuconst.AUDIBLE_NONE
+                    elif "FAIL" in audible:
+                        retconstval = smuconst.AUDIBLE_FAIL
+                    elif "PASS" in audible:
+                        retconstval = smuconst.AUDIBLE_PASS
+                else:
+                    if state == smuconst.AUDIBLE_NONE:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_NONE")
+                    elif state == smuconst.AUDIBLE_FAIL:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_FAIL")
+                    elif state == smuconst.AUDIBLE_PASS:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_PASS")
+                return retconstval
+
+            def autoclear(self, limit_number, state=None):
+                """
+                This attribute indicates if the test result for limit Y should be cleared automatically or not.
+
+                :param limit_number: Either 1 or 2
+                :param state: Either 0 (OFF) or 1 (ON)
+                :return: When state is not None, this function is used to return the present autoclear limit setting
+                """
+                retconstval = None
+
+                if state is None:
+                    self.mycomms.write(f"state=smu.measure.limit[{limit_number}].autoclear")
+                    audible = self.mycomms.query("print(state)").rstrip()
+                    if "ON" in audible:
+                        retconstval = smuconst.ON
+                    elif "OFF" in audible:
+                        retconstval = smuconst.OFF
+                else:
+                    if state == smuconst.ON:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].autoclear = smu.ON")
+                    elif state == smuconst.OFF:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].autoclear = smu.OFF")
+                return retconstval
+
+            def clear(self, limit_number):
+                """
+                This function clears the results of the limit test defined by limit_number for the selected \
+                measurement function.
+
+                :param limit_number: Either 1 or 2
+                :return:
+                """
+                self.mycomms.write(f"smu.measure.limit[{limit_number}].clear()")
+
+            def enable(self, limit_number, state=None):
+                """
+                This attribute enables or disables a limit test on the measurement from the selected measure function.
+
+                :param limit_number: Either 1 or 2
+                :param state: Either 0 (OFF) or 1 (ON)
+                :return: When state is not None, this function is used to return the present enable limit setting
+                """
+                retconstval = None
+
+                if state is None:
+                    self.mycomms.write(f"state=smu.measure.limit[{limit_number}].enable")
+                    audible = self.mycomms.query("print(state)").rstrip()
+                    if "ON" in audible:
+                        retconstval = smuconst.ON
+                    elif "OFF" in audible:
+                        retconstval = smuconst.OFF
+                else:
+                    if state == smuconst.ON:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].enable = smu.ON")
+                    elif state == smuconst.OFF:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].enable = smu.OFF")
+                return retconstval
+
+            def fail(self, limit_number):
+                """
+                This attribute queries the results of a limit test.
+
+                :param limit_number: Either 1 or 2
+                :return: Either 0 (FAIL_NONE), 1 (FAIL_HIGH), 2 (FAIL_LOW), 3 (FAIL_BOTH).
+                """
+                retconstval = None
+
+                self.mycomms.write(f"result=smu.measure.limit[{limit_number}].fail")
+                audible = self.mycomms.query("print(result)").rstrip()
+
+                if "NONE" in audible:
+                    retconstval = smuconst.FAIL_NONE
+                elif "HIGH" in audible:
+                    retconstval = smuconst.FAIL_HIGH
+                elif "LOW" in audible:
+                    retconstval = smuconst.FAIL_LOW
+                elif "BOTH" in audible:
+                    retconstval = smuconst.FAIL_BOTH
+
+                return retconstval
+
+            def value(self, limit_number, high_or_low, value):
+                """
+                This function is used to either set or get the upper or lower limit for a limit test
+
+                :param limit_number: Either 1 or 2
+                :param high_or_low: Either 1 (FAIL_HIGH) or 2 (FAIL_LOW)
+                :param value: The level at which either the high or low limit will be set.
+                :return: When value is not None, this function is used to return the present limit value setting
+                """
+                limit_value = 0.0
+                if value is None:
+                    if high_or_low == smuconst.FAIL_HIGH:
+                        self.mycomms.write(f"highLimit=smu.measure.limit[{limit_number}].high.value")
+                        limit_value = self.mycomms.query("print(highLimit)").rstrip()
+                    elif high_or_low == smuconst.FAIL_LOW:
+                        self.mycomms.write(f"lowLimit=smu.measure.limit[{limit_number}].low.value")
+                        limit_value = self.mycomms.query("print(lowLimit)").rstrip()
+                else:
+                    if high_or_low == smuconst.FAIL_HIGH:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].high.value = {value}")
+                    elif high_or_low == smuconst.FAIL_LOW:
+                        self.mycomms.write(f"smu.measure.limit[{limit_number}].low.value = {value}")
+
+                return limit_value
+
         class Math:
             def __init__(self):
                 self.mycomms = None
+
+        @property
+        def nplc(self):
+            """
+            This command gets the time that the input signal is measured for the selected function.
+
+            :return: nplc
+            """
+            self.mycomms.write("nplc=smu.measure.nplc")
+            nplc = float(self.mycomms.query("print(nplc)").rstrip())
+            return nplc
+
+        @nplc.setter
+        def nplc(self, nplc):
+            """
+            This command sets the time that the input signal is measured for the selected function.
+
+            :param nplc:
+            :return:
+            """
+            self.mycomms.write(f"smu.measure.nplc={nplc}")
 
         class Rel:
             def __init__(self):
