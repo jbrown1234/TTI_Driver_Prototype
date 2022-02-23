@@ -208,105 +208,6 @@ class KeithleySeries2400InteractiveSmu():
             """This function allows you to create up to three custom units of measure for use in buffers."""
             f"buffer.unit(buffer.UNIT_CUSTOMN, unitOfMeasure)"
 
-    class SourceConfiguration:
-        def __init__(self):
-            self.range = None
-            self.mycomms = None
-            self.configlist = self.ConfigList()
-            self.protect = self.Protect()
-            self.ilimit = self.ILimit()
-            self.vlimit = self.VLimit()
-
-        def update_comms(self):
-            """This function is used to ensure lower level consumer classes tied to the driver are updated to promote instrument communications."""
-            self.configlist.mycoms = self.mycomms
-            self.protect.mycoms = self.mycomms
-            self.ilimit.mycomms = self.mycomms
-            self.vlimit.mycomms = self.mycomms
-
-        class ConfigList:
-            def __init__(self):
-                self.mycoms = None
-
-        class Protect:
-            def __init__(self):
-                self.mycoms = None
-
-        @property
-        def function(self):
-            """This attribute contains the source function, which can be voltage or current."""
-            self.mycomms.write("srcfunc = smu.source.func")
-            response = self.mycomms.query("print(srcfunc)").rstrip()
-            retconstval = None
-            if "VOLTAGE" in response:
-                retconstval = smuconst.FUNC_DC_VOLTAGE
-            else:
-                retconstval = smuconst.FUNC_DC_CURRENT
-            return retconstval
-
-        @function.setter
-        def function(self, func):
-            """This attribute contains the source function, which can be voltage or current."""
-            if func == smuconst.FUNC_DC_VOLTAGE:
-                self.mycomms.write("smu.source.func = smu.FUNC_DC_VOLTAGE")
-                # print()
-            else:
-                self.mycomms.write("smu.source.func = smu.FUNC_DC_CURRENT")
-                # print()
-
-        @property
-        def level(self):
-            """This attribute immediately selects a fixed amplitude for the selected source function."""
-            self.mycomms.write("srclev = smu.source.level")
-            return float(self.mycomms.query("print(srclev)").rstrip())
-
-        @level.setter
-        def level(self, value):
-            """This attribute immediately selects a fixed amplitude for the selected source function."""
-            self.mycomms.write(f"smu.source.level = {value}")
-
-        class ILimit:
-            def __init__(self):
-                self.mycomms = None
-
-            @property
-            def level(self):
-                """This attribute selects the source limit for current measurements."""
-                self.mycomms.write("ilimitlev = smu.source.ilimit.level")
-                return float(self.mycomms.query("print(ilimitlev)").rstrip())
-
-            @level.setter
-            def level(self, value):
-                """This attribute selects the source limit for current measurements."""
-                self.mycomms.write(f"smu.source.ilimit.level = {value}")
-
-            @property
-            def tripped(self):
-                """This attribute indicates if the source exceeded the limits that were set for the selected measurements."""
-                self.mycomms.write("ilimittrip = smu.source.ilimit.tripped")
-                return int(self.mycomms.query("print(ilimittrip)").rstrip())
-
-        class VLimit:
-            def __init__(self):
-                self.mycomms = None
-
-            @property
-            def level(self):
-                """This attribute selects the source limit for voltage measurements."""
-                self.mycomms.write("vlimitlev = smu.source.vlimit.level")
-                return float(self.mycomms.query("print(vlimitlev)").rstrip())
-
-            @level.setter
-            def level(self, value):
-                """This attribute selects the source limit for voltage measurements."""
-                self.mycomms.write(f"smu.source.vlimit.level = {value}")
-
-            @property
-            def tripped(self):
-                """This attribute indicates if the source exceeded the limits that were set for the selected measurements."""
-                self.mycomms.write("vlimittrip = smu.source.vlimit.tripped")
-                return int(self.mycomms.query("print(vlimittrip)").rstrip())
-
     class MeasureConfiguration:
         def __init__(self):
             self.range = None
@@ -910,6 +811,109 @@ class KeithleySeries2400InteractiveSmu():
             def __init__(self):
                 self.mycomms = None
 
+            def enable(self, state=None):
+                """
+                This attribute enables or disables math operations on measurements for the selected measurement \
+                function.
+
+                :param state: Either 1 (ON) or 0 (OFF)
+                :return: Either 1 (ON) or 0 (OFF)
+                """
+                retconstval = None
+
+                if state is None:
+                    self.mycomms.write(f"state = smu.measure.math.enable")
+                    state = self.mycomms.query("print(state)").rstrip()
+                    if "ON" in state:
+                        retconstval = smuconst.ON
+                    elif "OFF" in state:
+                        retconstval = smuconst.OFF
+                else:
+                    if state == smuconst.ON:
+                        self.mycomms.write(f"smu.measure.math.enable = smu.ON")
+                    elif state == smuconst.OFF:
+                        self.mycomms.write(f"smu.measure.math.enable = smu.OFF")
+                return retconstval
+
+            def format(self, operation):
+                """
+                This attribute specifies which math operation is performed on measurements when math operations are \
+                enabled.
+
+                :param operation: Either MX+B (0), PERCENT (1), or RECIPROCAL (2)
+                :return: Either MX+B (0), PERCENT (1), or RECIPROCAL (2)
+                """
+                retconstval = None
+
+                if operation is None:
+                    self.mycomms.write(f"operation = smu.measure.math.format")
+                    operation = self.mycomms.query("print(operation)").rstrip()
+                    if "MXB" in operation:
+                        retconstval = smuconst.MATH_MXB
+                    elif "PERCENT" in operation:
+                        retconstval = smuconst.MATH_PERCENT
+                    elif "RECPROCAL" in operation:
+                        retconstval = smuconst.MATH_RECIPROCAL
+                else:
+                    if operation == smuconst.MATH_MXB:
+                        self.mycomms.write(f"smu.measure.math.format = smu.MATH_MXB")
+                    elif operation == smuconst.MATH_PERCENT:
+                        self.mycomms.write(f"smu.measure.math.format = smu.PERCENT")
+                    elif operation == smuconst.MATH_RECIPROCAL:
+                        self.mycomms.write(f"smu.measure.math.format = smu.RECIPROCAL")
+                return retconstval
+
+            def mxb_bfactor(self, value):
+                """
+                This attribute specifies the offset, b, for the y = mx + b operation.
+
+                :param value: The offset for the y = mx + b operation; the valid range is −1e12 to +1e12
+                :return: Present setting for the b (offset) factor of the mx+b math operation.
+                """
+                retconstval = None
+
+                if value is None:
+                    self.mycomms.write(f"value = smu.measure.math.mxb.bfactor")
+                    value = self.mycomms.query("print(value)").rstrip()
+                    retconstval = value
+                else:
+                    self.mycomms.write(f"smu.measure.math.mxb.bfactor = {value}")
+                return retconstval
+
+            def mxb_mfactor(self, value):
+                """
+                This attribute specifies the scale factor, m, for the y = mx + b math operation.
+
+                :param value: The scale factor; the valid range is −1e12 to +1e12
+                :return: Present setting for the m (scale) factor of the mx+b math operation.
+                """
+                retconstval = None
+
+                if value is None:
+                    self.mycomms.write(f"value = smu.measure.math.mxb.mfactor")
+                    value = self.mycomms.query("print(value)").rstrip()
+                    retconstval = value
+                else:
+                    self.mycomms.write(f"smu.measure.math.mxb.mfactor = {value}")
+                return retconstval
+
+            def percent(self, value):
+                """
+                This attribute specifies the reference constant that is used when math operations are set to percent.
+
+                :param value: The reference used when the math operation is set to percent; the range is −1e12 to +1e12
+                :return: The percent value set for the math function.
+                """
+                retconstval = None
+
+                if value is None:
+                    self.mycomms.write(f"value = smu.measure.math.percent")
+                    value = self.mycomms.query("print(value)").rstrip()
+                    retconstval = value
+                else:
+                    self.mycomms.write(f"smu.measure.math.percent = {value}")
+                return retconstval
+
         @property
         def nplc(self):
             """
@@ -931,9 +935,137 @@ class KeithleySeries2400InteractiveSmu():
             """
             self.mycomms.write(f"smu.measure.nplc={nplc}")
 
+        @property
+        def offsetcompensation(self):
+            """
+            DESC
+            
+            :return:
+            """
+            retval = None
+            self.mycomms.write("state = smu.measure.offsetcompensation")
+            state = self.mycomms.query("print(state)").rstrip()
+            if "ON" in state:
+                retval = smuconst.ON
+            elif "OFF" in state:
+                retval = smuconst.OFF
+            return retval
+
+        @offsetcompensation.setter
+        def offsetcompensation(self, state):
+            """
+            DESC
+
+            :param state:
+            :return:
+            """
+            if state == smuconst.ON:
+                self.mycomms.write(f"smu.measure.nplc=smu.ON")
+            else:
+                self.mycomms.write(f"smu.measure.nplc=smu.OFF")
+
         class Rel:
             def __init__(self):
                 self.mycomms = None
+
+    class SourceConfiguration:
+        def __init__(self):
+            self.range = None
+            self.mycomms = None
+            self.configlist = self.ConfigList()
+            self.protect = self.Protect()
+            self.ilimit = self.ILimit()
+            self.vlimit = self.VLimit()
+
+        def update_comms(self):
+            """This function is used to ensure lower level consumer classes tied to the driver are updated to promote instrument communications."""
+            self.configlist.mycoms = self.mycomms
+            self.protect.mycoms = self.mycomms
+            self.ilimit.mycomms = self.mycomms
+            self.vlimit.mycomms = self.mycomms
+
+        class ConfigList:
+            def __init__(self):
+                self.mycoms = None
+
+        class Protect:
+            def __init__(self):
+                self.mycoms = None
+
+        @property
+        def function(self):
+            """This attribute contains the source function, which can be voltage or current."""
+            self.mycomms.write("srcfunc = smu.source.func")
+            response = self.mycomms.query("print(srcfunc)").rstrip()
+            retconstval = None
+            if "VOLTAGE" in response:
+                retconstval = smuconst.FUNC_DC_VOLTAGE
+            else:
+                retconstval = smuconst.FUNC_DC_CURRENT
+            return retconstval
+
+        @function.setter
+        def function(self, func):
+            """This attribute contains the source function, which can be voltage or current."""
+            if func == smuconst.FUNC_DC_VOLTAGE:
+                self.mycomms.write("smu.source.func = smu.FUNC_DC_VOLTAGE")
+                # print()
+            else:
+                self.mycomms.write("smu.source.func = smu.FUNC_DC_CURRENT")
+                # print()
+
+        @property
+        def level(self):
+            """This attribute immediately selects a fixed amplitude for the selected source function."""
+            self.mycomms.write("srclev = smu.source.level")
+            return float(self.mycomms.query("print(srclev)").rstrip())
+
+        @level.setter
+        def level(self, value):
+            """This attribute immediately selects a fixed amplitude for the selected source function."""
+            self.mycomms.write(f"smu.source.level = {value}")
+
+        class ILimit:
+            def __init__(self):
+                self.mycomms = None
+
+            @property
+            def level(self):
+                """This attribute selects the source limit for current measurements."""
+                self.mycomms.write("ilimitlev = smu.source.ilimit.level")
+                return float(self.mycomms.query("print(ilimitlev)").rstrip())
+
+            @level.setter
+            def level(self, value):
+                """This attribute selects the source limit for current measurements."""
+                self.mycomms.write(f"smu.source.ilimit.level = {value}")
+
+            @property
+            def tripped(self):
+                """This attribute indicates if the source exceeded the limits that were set for the selected measurements."""
+                self.mycomms.write("ilimittrip = smu.source.ilimit.tripped")
+                return int(self.mycomms.query("print(ilimittrip)").rstrip())
+
+        class VLimit:
+            def __init__(self):
+                self.mycomms = None
+
+            @property
+            def level(self):
+                """This attribute selects the source limit for voltage measurements."""
+                self.mycomms.write("vlimitlev = smu.source.vlimit.level")
+                return float(self.mycomms.query("print(vlimitlev)").rstrip())
+
+            @level.setter
+            def level(self, value):
+                """This attribute selects the source limit for voltage measurements."""
+                self.mycomms.write(f"smu.source.vlimit.level = {value}")
+
+            @property
+            def tripped(self):
+                """This attribute indicates if the source exceeded the limits that were set for the selected measurements."""
+                self.mycomms.write("vlimittrip = smu.source.vlimit.tripped")
+                return int(self.mycomms.query("print(vlimittrip)").rstrip())
 
     @property
     def terminals(self):
