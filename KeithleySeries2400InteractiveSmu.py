@@ -1042,8 +1042,8 @@ class KeithleySeries2400InteractiveSmu():
                 :return: Disabled 0 (OFF); enabled 1 (ON)
                 """
                 retval = None
-                self.mycomms.write("relEnable = smu.measure.rel.enable")
-                state = self.mycomms.query("print(relEnable)").rstrip()
+                self.mycomms.write("rel_enable = smu.measure.rel.enable")
+                state = self.mycomms.query("print(rel_enable)").rstrip()
                 if "ON" in state:
                     retval = smuconst.ON
                 elif "OFF" in state:
@@ -1063,6 +1063,27 @@ class KeithleySeries2400InteractiveSmu():
                 elif state == smuconst.OFF:
                     self.mycomms.write("smu.measure.rel.enable = smu.OFF")
 
+            @property
+            def level(self):
+                """
+                This attribute contains the relative offset value.
+
+                :return: Relative offset value for measurements.
+                """
+                self.mycomms.write("rel_level = smu.measure.rel.level")
+                level = float(self.mycomms.query("print(rel_level)").rstrip())
+                return level
+
+            @level.setter
+            def level(self, level):
+                """
+                This attribute contains the relative offset value.
+
+                :param level: Relative offset value for measurements.
+                :return:
+                """
+                self.mycomms.write(f"smu.measure.rel.level = {level}")
+
     class SourceConfiguration:
         def __init__(self):
             self.range = None
@@ -1073,7 +1094,9 @@ class KeithleySeries2400InteractiveSmu():
             self.vlimit = self.VLimit()
 
         def update_comms(self):
-            """This function is used to ensure lower level consumer classes tied to the driver are updated to promote instrument communications."""
+            """This function is used to ensure lower level consumer classes tied to the driver are updated to promote \
+             instrument communications.
+             """
             self.configlist.mycoms = self.mycomms
             self.protect.mycoms = self.mycomms
             self.ilimit.mycomms = self.mycomms
@@ -1088,19 +1111,19 @@ class KeithleySeries2400InteractiveSmu():
                 self.mycoms = None
 
         @property
-        def function(self):
+        def func(self):
             """This attribute contains the source function, which can be voltage or current."""
             self.mycomms.write("srcfunc = smu.source.func")
             response = self.mycomms.query("print(srcfunc)").rstrip()
-            retconstval = None
+            #retconstval = None
             if "VOLTAGE" in response:
                 retconstval = smuconst.FUNC_DC_VOLTAGE
             else:
                 retconstval = smuconst.FUNC_DC_CURRENT
             return retconstval
 
-        @function.setter
-        def function(self, func):
+        @func.setter
+        def func(self, func):
             """This attribute contains the source function, which can be voltage or current."""
             if func == smuconst.FUNC_DC_VOLTAGE:
                 self.mycomms.write("smu.source.func = smu.FUNC_DC_VOLTAGE")
