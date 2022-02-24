@@ -938,9 +938,9 @@ class KeithleySeries2400InteractiveSmu():
         @property
         def offsetcompensation(self):
             """
-            DESC
-            
-            :return:
+            This attribute determines if offset compensation is used.
+
+            :return: Disable with 0 (OFF); enable with 1 (ON)
             """
             retval = None
             self.mycomms.write("state = smu.measure.offsetcompensation")
@@ -954,9 +954,9 @@ class KeithleySeries2400InteractiveSmu():
         @offsetcompensation.setter
         def offsetcompensation(self, state):
             """
-            DESC
+            This attribute determines if offset compensation is used.
 
-            :param state:
+            :param state: To disable, 0 (OFF); to enable 1 (ON)
             :return:
             """
             if state == smuconst.ON:
@@ -964,9 +964,104 @@ class KeithleySeries2400InteractiveSmu():
             else:
                 self.mycomms.write(f"smu.measure.nplc=smu.OFF")
 
+        @property
+        def range(self):
+            """
+            This attribute determines the positive full-scale measure range.
+
+            :return: The applied measure range.
+            """
+            retval = None
+            self.mycomms.write("rangeValue = smu.measure.range")
+            state = self.mycomms.query("print(rangeValue)").rstrip()
+            return retval
+
+        @range.setter
+        def range(self, rangeValue):
+            """
+            This attribute determines the positive full-scale measure range.
+
+            :param rangeValue: Set to the maximum expected value to be measured
+            :return:
+            """
+            self.mycomms.write(f"smu.measure.range={rangeValue}")
+
+        def read(self, buffer_name=None):
+            """
+            This function makes measurements, places them in a reading buffer, and returns the last reading.
+
+            :param buffer_name: The name of the reading buffer, which may be a default buffer (defbuffer1 or \
+            defbuffer2) or a user-defined buffer; if no buffer is defined, it defaults to defbuffer1
+            :return: The last reading of the measurement process
+            """
+            if buffer_name is None:
+                reading = float(self.mycomms.query(f"print(smu.measure.read())").rstrip())
+            else:
+                reading = float(self.mycomms.query(f"print(smu.measure.read(\"{buffer_name}\")").rstrip())
+            return reading
+
+        def readwithtime(self, buffer_name=None):
+            """
+            This function initiates measurements and returns the last actual measurement and time information in UTC \
+            format without using the trigger model
+
+            :param buffer_name: The name of the reading buffer, which may be a default buffer (defbuffer1 or \
+            defbuffer2) or a user-defined buffer; if no buffer is defined, it defaults to defbuffer1
+            :return: reading - The last reading of the measurement process;
+                     seocnds - Seconds in UTC format;
+                     fractional - Fractional seconds;
+            """
+            if buffer_name is None:
+                self.mycomms.write(f"reading,seconds,fractional=smu.measure.readwithtime())")
+            else:
+                self.mycomms.write(f"reading,seconds,fractional=smu.measure.readwithtime(\"{buffer_name}\")")
+            reading = float(self.mycomms.query("print(reading)").rstrip())
+            seconds = int(self.mycomms.query("print(seconds)").rstrip())
+            fractional = float(self.mycomms.query("print(fractional)").rstrip())
+            return reading, seconds, fractional
+
         class Rel:
             def __init__(self):
                 self.mycomms = None
+
+            def acquire(self):
+                """
+                This function acquires a measurement and stores it as the relative offset value.
+
+                :return: The internal measurement acquired for the relative offset value.
+                """
+                self.mycomms.write("relativeValue = smu.measure.rel.acquire()")
+                relative_value = float(self.mycomms.write("print(relative_value)").rstrip())
+                return relative_value
+
+            @property
+            def enable(self):
+                """
+                This attribute enables or disables the application of a relative offset value to the measurement.
+
+                :return: Disabled 0 (OFF); enabled 1 (ON)
+                """
+                retval = None
+                self.mycomms.write("relEnable = smu.measure.rel.enable")
+                state = self.mycomms.query("print(relEnable)").rstrip()
+                if "ON" in state:
+                    retval = smuconst.ON
+                elif "OFF" in state:
+                    retval = smuconst.OFF
+                return retval
+
+            @enable.setter
+            def enable(self, state):
+                """
+                This attribute enables or disables the application of a relative offset value to the measurement.
+
+                :param state: Disable with 0 (OFF); enable with 1 (ON)
+                :return:
+                """
+                if state == smuconst.ON:
+                    self.mycomms.write("smu.measure.rel.enable = smu.ON")
+                elif state == smuconst.OFF:
+                    self.mycomms.write("smu.measure.rel.enable = smu.OFF")
 
     class SourceConfiguration:
         def __init__(self):
