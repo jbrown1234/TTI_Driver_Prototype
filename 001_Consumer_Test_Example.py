@@ -26,7 +26,7 @@ print(mysmu.instrument_id_query())
 mysmu.reset()
 
 # Set up the source function
-mysmu.source.function = smuconst.FUNC_DC_VOLTAGE
+mysmu.source.func = smuconst.FUNC_DC_VOLTAGE
 mysmu.source.ilimit.level = 1.0
 mysmu.source.level = 20.0
 
