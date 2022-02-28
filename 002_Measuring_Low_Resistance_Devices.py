@@ -26,6 +26,7 @@
 # ********************************************************************************
 import KeithleySeries2400InteractiveSmu as KeiSmu
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
+import time
 
 mysmu = KeiSmu.KeithleySeries2400InteractiveSmu()
 
@@ -50,13 +51,21 @@ mysmu.source.output = smuconst.ON
 
 # Initiate trigger model and wait until finished.
 mysmu.trigger.model.initiate()
-mysmu.waitcomplete()
+# mysmu.waitcomplete()
+time.sleep(0.1)
+trig_state = mysmu.trigger.model.state
+while trig_state is smuconst.TRIGGER_STATE_RUNNING:
+    time.sleep(0.1)
+    trig_state = mysmu.trigger.model.state
 
 # Turn off output
 mysmu.source.output = smuconst.OFF
 
 # Read the resistance and time values from defbuffer1.
-
-print(mysmu.instrument_id_query())
+print("Resistance: \tTime: ")
+for i in range(1, 100, 1):
+    reading_val = mysmu.get_buffer_value("defbuffer1", i, readings=True)
+    reltime_val = mysmu.get_buffer_value("defbuffer1", i, relativetimestamps=True)
+    print(reading_val + ", " + reltime_val)
 
 mysmu.close()
