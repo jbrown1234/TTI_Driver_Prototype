@@ -125,3 +125,89 @@ class KeithleySeries2400InteractiveSmu():
         :return: None
         """
         self.instrumentcomms.write("waitcomplete()")
+
+    def get_buffer_value(self, buffer_name, index, readings=False, relativetimestamps=False, formattedreadings=False,
+                         fractionalseconds=False, extravalues=False, extravalueunits=False, extraformattedvalues=False,
+                         dates=False, seconds=False, sourceformattedvalues=False, sourcestatuses=False,
+                         sourceunits=False, statuses=False, times=False, timestamps=False, units=False):
+        write_string = "print("
+        #add_comma = False
+        if readings:
+            write_string += f"{buffer_name}.readings[{index}]"
+            #add_comma = True
+        elif relativetimestamps:
+            #if add_comma:
+            #write_string += ","
+            write_string += f"{buffer_name}.relativetimestamps[{index}]"
+            #add_comma = True
+        elif formattedreadings:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.fractionalseconds[{index}]"
+            #add_comma = True
+        elif fractionalseconds:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.fractionalseconds[{index}]"
+            #add_comma = True
+        elif extravalues:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.extravalues[{index}]"
+            #add_comma = True
+        elif extravalueunits:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.extravalueunits[{index}]"
+            #add_comma = True
+        elif extraformattedvalues:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.extraformattedvalues[{index}]"
+            #add_comma = True
+        elif dates:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.dates[{index}]"
+            #add_comma = True
+        elif seconds:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.seconds[{index}]"
+            #add_comma = True
+        elif sourceformattedvalues:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.sourceformattedvalues[{index}]"
+            #add_comma = True
+        elif sourcestatuses:
+           # if add_comma:
+           #     write_string += ","
+            write_string += f"{buffer_name}.sourcestatuses[{index}]"
+            #add_comma = True
+        elif sourceunits:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.sourceunits[{index}]"
+            #add_comma = True
+        elif statuses:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.statuses[{index}]"
+            #add_comma = True
+        elif times:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.times[{index}]"
+            #add_comma = True
+        elif timestamps:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.timestamps[{index}]"
+            #add_comma = True
+        elif units:
+            #if add_comma:
+            #    write_string += ","
+            write_string += f"{buffer_name}.units[{index}]"
+        write_string += ")"
+        return self.instrumentcomms.query(write_string).rstrip()
