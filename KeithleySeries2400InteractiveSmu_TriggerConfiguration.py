@@ -45,3 +45,27 @@ class TriggerConfiguration:
                 self.mycomms.write(f"trigger.model.load(\"SimpleLoop\", {count}, {delay})")
             else:
                 self.mycomms.write(f"trigger.model.load(\"SimpleLoop\", {count})")
+
+        @property
+        def state(self):
+            """
+            This function returns the present state of the trigger model.
+
+            :return: Will return one of the following: ABORTED, ABORTING, BUILDING, EMPTY, FAILED, IDLE, RUNNING
+            """
+            self.mycomms.write("stat, stat, n = trigger.model.state()")
+            status = self.mycomms.query("print(stat)")
+            if "ABORTED" in status:
+                return smuconst.TRIGGER_STATE_ABORTED
+            elif "ABORTING" in status:
+                return smuconst.TRIGGER_STATE_ABORTING
+            elif "BUILDING" in status:
+                return smuconst.TRIGGER_STATE_BUILDING
+            elif "EMPTY" in status:
+                return smuconst.TRIGGER_STATE_EMPTY
+            elif "FAIL" in status:
+                return smuconst.TRIGGER_STATE_FAILED
+            elif "IDLE" in status:
+                return smuconst.TRIGGER_STATE_IDLE
+            elif "RUNNING" in status:
+                return smuconst.TRIGGER_STATE_RUNNING
