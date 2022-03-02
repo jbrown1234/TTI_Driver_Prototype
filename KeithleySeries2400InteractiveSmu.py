@@ -126,10 +126,43 @@ class KeithleySeries2400InteractiveSmu():
         """
         self.instrumentcomms.write("waitcomplete()")
 
+    def get_buffer_reading_count(self, buffer_name="defbuffer1"):
+        """
+        This function returns the number of readings presently stored in the specified reading buffer. If no reading
+        buffer is specified, the default is defbuffer1.
+
+        :param buffer_name: The reading buffer whose reading count will be returned.
+        :return:
+        """
+        return int(self.instrumentcomms.query(f"print({buffer_name}.n)").rstrip())
+
     def get_buffer_value(self, buffer_name, index, readings=False, relativetimestamps=False, formattedreadings=False,
                          fractionalseconds=False, extravalues=False, extravalueunits=False, extraformattedvalues=False,
                          dates=False, seconds=False, sourceformattedvalues=False, sourcestatuses=False,
                          sourceunits=False, statuses=False, times=False, timestamps=False, units=False):
+        """
+        This function is used to return any one of the table values as part of an instrument buffer at the specified index position.
+
+        :param buffer_name:
+        :param index:
+        :param readings:
+        :param relativetimestamps:
+        :param formattedreadings:
+        :param fractionalseconds:
+        :param extravalues:
+        :param extravalueunits:
+        :param extraformattedvalues:
+        :param dates:
+        :param seconds:
+        :param sourceformattedvalues:
+        :param sourcestatuses:
+        :param sourceunits:
+        :param statuses:
+        :param times:
+        :param timestamps:
+        :param units:
+        :return: Any one of the table values as part of an instrument buffer.
+        """
         write_string = "print("
         #add_comma = False
         if readings:
