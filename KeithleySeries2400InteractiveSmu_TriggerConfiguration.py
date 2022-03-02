@@ -29,6 +29,25 @@ class TriggerConfiguration:
             """
             self.mycomms.write("trigger.model.initiate()")
 
+        def load_duration_loop(self, duration, delay=None, buffer_name=None):
+            """
+            This function loads a trigger-model template configuration that makes continuous measurements for a
+            specified amount of time.
+
+            :param duration: The amount of time for which to make measurements (167 ns to 100 ks)
+            :param delay: The delay time before each measurement (167 ns to 10 ks); default is 0 for no delay
+            :param buffer_name: The name of the reading buffer, which may be a default buffer (defbuffer1 or defbuffer2) or a user-defined buffer; defaults to defbuffer1
+            :return: None
+            """
+            if buffer_name is not None:
+                self.mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration}, {delay}, {buffer_name})")
+            elif delay is not None:
+                self.mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration}, {delay})")
+            else:
+                self.mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration})")
+
+            print(0)
+
         def load_simple_loop(self, count, delay=None, buffer_name=None):
             """
             This function loads a trigger-model template configuration that makes a specific number of measurements.
