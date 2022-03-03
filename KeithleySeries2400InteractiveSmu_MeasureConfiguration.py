@@ -4,7 +4,7 @@ import KeithleySeries2400InteractiveSmu_Constants as smuconst
 
 class MeasureConfiguration:
     def __init__(self):
-        self.mycomms = None
+        self._mycomms = None
         # self.range = None
         self.autozero = self.AutoZero()
         self.configlist = self.ConfigList()
@@ -20,12 +20,12 @@ class MeasureConfiguration:
 
         :return:
         """
-        self.autozero.mycomms = self.mycomms
-        self.configlist.mycomms = self.mycomms
-        self.filter.mycomms = self.mycomms
-        self.limit.mycomms = self.mycomms
-        self.math.mycomms = self.mycomms
-        self.rel.mycomms = self.mycomms
+        self.autozero._mycomms = self._mycomms
+        self.configlist._mycomms = self._mycomms
+        self.filter._mycomms = self._mycomms
+        self.limit._mycomms = self._mycomms
+        self.math._mycomms = self._mycomms
+        self.rel._mycomms = self._mycomms
 
     @property
     def autorange(self):
@@ -36,8 +36,8 @@ class MeasureConfiguration:
         :return: Either 0 (smu.OFF) or 1 (smu.ON)
         """
         arange = None
-        self.mycomms.write("autorange = smu.measure.autorange")
-        response = self.mycomms.query("print(autorange)").rstrip()
+        self._mycomms.write("autorange = smu.measure.autorange")
+        response = self._mycomms.query("print(autorange)").rstrip()
         if "ON" in response:
             arange = smuconst.ON
         else:
@@ -54,9 +54,9 @@ class MeasureConfiguration:
         :return:
         """
         if value == smuconst.ON:
-            self.mycomms.write("smu.measure.autorange=smu.ON")
+            self._mycomms.write("smu.measure.autorange=smu.ON")
         else:
-            self.mycomms.write("smu.measure.autorange=smu.OFF")
+            self._mycomms.write("smu.measure.autorange=smu.OFF")
 
     @property
     def autorangehigh(self):
@@ -67,8 +67,8 @@ class MeasureConfiguration:
         :return: highrange (float) - a value representative of a valid instrument range
         """
         highrange = None
-        self.mycomms.write("highRange = smu.measure.autorangehigh")
-        highrange = float(self.mycomms.query("print(highRange)").rstrip())
+        self._mycomms.write("highRange = smu.measure.autorangehigh")
+        highrange = float(self._mycomms.query("print(highRange)").rstrip())
         return highrange
 
     @autorangehigh.setter
@@ -80,7 +80,7 @@ class MeasureConfiguration:
         :param range_value: (float) A value representative of a valid instrument range
         :return:
         """
-        self.mycomms.write(f"smu.measure.autorangehigh={range_value}")
+        self._mycomms.write(f"smu.measure.autorangehigh={range_value}")
 
     @property
     def autorangelow(self):
@@ -91,8 +91,8 @@ class MeasureConfiguration:
         :return: lowrange (float) - a value representative of a valid instrument range
         """
         lowrange = None
-        self.mycomms.write("lowRange = smu.measure.autorangelow")
-        highrange = float(self.mycomms.query("print(lowRange)").rstrip())
+        self._mycomms.write("lowRange = smu.measure.autorangelow")
+        highrange = float(self._mycomms.query("print(lowRange)").rstrip())
         return lowrange
 
     @autorangelow.setter
@@ -104,7 +104,7 @@ class MeasureConfiguration:
         :param range_value: (float) A value representative of a valid instrument range
         :return:
         """
-        self.mycomms.write(f"smu.measure.autorangehigh={range_value}")
+        self._mycomms.write(f"smu.measure.autorangehigh={range_value}")
 
     @property
     def autorangerebound(self):
@@ -114,8 +114,8 @@ class MeasureConfiguration:
 
         :return: Either 1 (ON) or 0 (OFF)
         """
-        self.mycomms.write("state = smu.measure.autorangerebound")
-        response = self.mycomms.query("print(state)").rstrip()
+        self._mycomms.write("state = smu.measure.autorangerebound")
+        response = self._mycomms.query("print(state)").rstrip()
         retconstval = None
         if "ON" in response:
             retconstval = smuconst.ON
@@ -133,13 +133,13 @@ class MeasureConfiguration:
         :return:
         """
         if state == smuconst.ON:
-            self.mycomms.write("smu.measure.autorangerebound=smu.ON")
+            self._mycomms.write("smu.measure.autorangerebound=smu.ON")
         else:
-            self.mycomms.write("smu.measure.autorangerebound=smu.OFF")
+            self._mycomms.write("smu.measure.autorangerebound=smu.OFF")
 
     class AutoZero:
         def __init__(self):
-            self.mycomms = None
+            self._mycomms = None
 
         @property
         def enable(self):
@@ -149,8 +149,8 @@ class MeasureConfiguration:
 
             :return: Either 1 (ON) or 0 (OFF)
             """
-            self.mycomms.write("state = smu.measure.autorange.enable")
-            response = self.mycomms.query("print(state)").rstrip()
+            self._mycomms.write("state = smu.measure.autorange.enable")
+            response = self._mycomms.query("print(state)").rstrip()
             retconstval = None
             if "ON" in response:
                 retconstval = smuconst.ON
@@ -168,9 +168,9 @@ class MeasureConfiguration:
             :return:
             """
             if state == smuconst.ON:
-                self.mycomms.write("smu.measure.autorange.enable=smu.ON")
+                self._mycomms.write("smu.measure.autorange.enable=smu.ON")
             else:
-                self.mycomms.write("smu.measure.autorange.enable=smu.OFF")
+                self._mycomms.write("smu.measure.autorange.enable=smu.OFF")
 
         def once(self):
             """
@@ -178,11 +178,11 @@ class MeasureConfiguration:
 
             :return:
             """
-            self.mycomms.write("smu.measure.autorange.once()")
+            self._mycomms.write("smu.measure.autorange.once()")
 
     class ConfigList:
         def __init__(self):
-            self.mycomms = None
+            self._mycomms = None
 
         def catalog(self):
             """
@@ -190,7 +190,7 @@ class MeasureConfiguration:
 
             :return: The name of a configuration list.
             """
-            self.mycomms.query("print(smu.measure.configlist.catalog())")
+            self._mycomms.query("print(smu.measure.configlist.catalog())")
 
         def create(self, list_name):
             """
@@ -199,7 +199,7 @@ class MeasureConfiguration:
             :param list_name:
             :return:
             """
-            self.mycomms.write(f"smu.measure.configlist.create({list_name}))")
+            self._mycomms.write(f"smu.measure.configlist.create({list_name}))")
 
         def delete(self, list_name, index=None):
             """
@@ -210,9 +210,9 @@ class MeasureConfiguration:
             :return:
             """
             if index == None:
-                self.mycomms.write(f"smu.measure.configlist.delete(\"{list_name}\"))")
+                self._mycomms.write(f"smu.measure.configlist.delete(\"{list_name}\"))")
             else:
-                self.mycomms.write(f"smu.measure.configlist.delete(\"{list_name}\", {index}))")
+                self._mycomms.write(f"smu.measure.configlist.delete(\"{list_name}\", {index}))")
 
         def query(self, list_name, index, field_separator=None):
             """
@@ -229,9 +229,9 @@ class MeasureConfiguration:
             :return:
             """
             if field_separator == None:
-                self.mycomms.query(f"print(smu.measure.configlist.query(\"{list_name}\", {index}))")
+                self._mycomms.query(f"print(smu.measure.configlist.query(\"{list_name}\", {index}))")
             else:
-                self.mycomms.query(f"print(smu.measure.configlist.query(\"{list_name}\", {index}, {field_separator}))")
+                self._mycomms.query(f"print(smu.measure.configlist.query(\"{list_name}\", {index}, {field_separator}))")
 
         def recall(self, list_name, index=None, source_list_name=None, source_index=None):
             """
@@ -246,15 +246,15 @@ class MeasureConfiguration:
             """
             if source_index == None:
                 if index == None:
-                    self.mycomms.write(f"smu.measure.configlist.recall(\"{list_name}\")")
+                    self._mycomms.write(f"smu.measure.configlist.recall(\"{list_name}\")")
                 else:
-                    self.mycomms.write(f"smu.measure.configlist.recall(\"{list_name}\", {index})")
+                    self._mycomms.write(f"smu.measure.configlist.recall(\"{list_name}\", {index})")
             else:
                 if source_index == None:
-                    self.mycomms.write(
+                    self._mycomms.write(
                         f"smu.measure.configlist.recall(\"{list_name}\", {index}),\"{source_list_name}\")")
                 else:
-                    self.mycomms.write(
+                    self._mycomms.write(
                         f"smu.measure.configlist.recall(\"{list_name}\", {index}),\"{source_list_name}\","
                         f" {source_index})")
 
@@ -265,8 +265,8 @@ class MeasureConfiguration:
             :param list_name:
             :return:
             """
-            self.mycomms.write(f"index_count = smu.measure.configlist.zier(\"{list_name}\")")
-            return int(self.mycomms.query("print(index_count)"))
+            self._mycomms.write(f"index_count = smu.measure.configlist.zier(\"{list_name}\")")
+            return int(self._mycomms.query("print(index_count)"))
 
         def store(self, list_name, index=None):
             """
@@ -277,9 +277,9 @@ class MeasureConfiguration:
             :return:
             """
             if index == None:
-                self.mycomms.write(f"smu.measure.configlist.store(\"{list_name}\")")
+                self._mycomms.write(f"smu.measure.configlist.store(\"{list_name}\")")
             else:
-                self.mycomms.write(f"smu.measure.configlist.store(\"{list_name}\", {index})")
+                self._mycomms.write(f"smu.measure.configlist.store(\"{list_name}\", {index})")
 
         def storefunc(self, list_name, function, index=None):
             """
@@ -300,9 +300,9 @@ class MeasureConfiguration:
                 function_str = "smu.FUNC_DC_RESISTANCE"
 
             if index == None:
-                self.mycomms.write(f"smu.measure.configlist.storefunc(\"{list_name}\", {function_str})")
+                self._mycomms.write(f"smu.measure.configlist.storefunc(\"{list_name}\", {function_str})")
             else:
-                self.mycomms.write(f"smu.measure.configlist.storefunc(\"{list_name}\", {function_str}, {index})")
+                self._mycomms.write(f"smu.measure.configlist.storefunc(\"{list_name}\", {function_str}, {index})")
 
     @property
     def count(self):
@@ -311,8 +311,8 @@ class MeasureConfiguration:
 
         :return: count
         """
-        self.mycomms.write("count=smu.measure.count")
-        count = int(self.mycomms.query("print(count)").rstrip())
+        self._mycomms.write("count=smu.measure.count")
+        count = int(self._mycomms.query("print(count)").rstrip())
         return count
 
     @count.setter
@@ -323,7 +323,7 @@ class MeasureConfiguration:
         :param count:
         :return:
         """
-        self.mycomms.write(f"smu.measure.count={count}")
+        self._mycomms.write(f"smu.measure.count={count}")
 
     @property
     def displaydigits(self):
@@ -333,8 +333,8 @@ class MeasureConfiguration:
 
         :return: 
         """""
-        self.mycomms.write("digits=smu.measure.displaydigits")
-        digits = int(self.mycomms.query("print(digits)").rstrip())
+        self._mycomms.write("digits=smu.measure.displaydigits")
+        digits = int(self._mycomms.query("print(digits)").rstrip())
         return digits
 
     @displaydigits.setter
@@ -346,7 +346,7 @@ class MeasureConfiguration:
         :param digits:
         :return:
         """
-        self.mycomms.write(f"smu.measure.displaydigits={digits}")
+        self._mycomms.write(f"smu.measure.displaydigits={digits}")
 
     @property
     def function(self):
@@ -355,8 +355,8 @@ class MeasureConfiguration:
 
         :return: Either 0 (FUNC_DC_VOLTAGE) or 1 (FUNC_DC_CURRENT)
         """
-        self.mycomms.write("measfunc = smu.measure.func")
-        response = self.mycomms.query("print(measfunc)").rstrip()
+        self._mycomms.write("measfunc = smu.measure.func")
+        response = self._mycomms.query("print(measfunc)").rstrip()
         retconstval = None
         if "VOLTAGE" in response:
             retconstval = smuconst.FUNC_DC_VOLTAGE
@@ -375,16 +375,16 @@ class MeasureConfiguration:
         :return:
         """
         if func == smuconst.FUNC_DC_VOLTAGE:
-            self.mycomms.write("smu.measure.func = smu.FUNC_DC_VOLTAGE")
+            self._mycomms.write("smu.measure.func = smu.FUNC_DC_VOLTAGE")
             # print()
         elif func == smuconst.FUNC_DC_CURRENT:
-            self.mycomms.write("smu.measure.func = smu.FUNC_DC_CURRENT")
+            self._mycomms.write("smu.measure.func = smu.FUNC_DC_CURRENT")
         elif func == smuconst.FUNC_RESISTANCE:
-            self.mycomms.write("smu.measure.func = smu.FUNC_RESISTANCE")
+            self._mycomms.write("smu.measure.func = smu.FUNC_RESISTANCE")
 
     class Filter:
         def __init__(self):
-            self.mycomms = None
+            self._mycomms = None
 
         @property
         def fcount(self):
@@ -393,8 +393,8 @@ class MeasureConfiguration:
 
             :return: count
             """
-            self.mycomms.write("filterCount=smu.measure.filter.count")
-            count = int(self.mycomms.query("print(filterCount)").rstrip())
+            self._mycomms.write("filterCount=smu.measure.filter.count")
+            count = int(self._mycomms.query("print(filterCount)").rstrip())
             return count
 
         @fcount.setter
@@ -405,7 +405,7 @@ class MeasureConfiguration:
             :param count:
             :return:
             """
-            self.mycomms.write(f"smu.measure.filter.count={count}")
+            self._mycomms.write(f"smu.measure.filter.count={count}")
 
         @property
         def enable(self):
@@ -414,8 +414,8 @@ class MeasureConfiguration:
 
             :return: Either 0 (OFF) or 1 (ON)
             """
-            self.mycomms.write("filterState = smu.measure.filter.enable")
-            response = self.mycomms.query("print(filterState)").rstrip()
+            self._mycomms.write("filterState = smu.measure.filter.enable")
+            response = self._mycomms.query("print(filterState)").rstrip()
             retconstval = None
             if "OFF" in response:
                 retconstval = smuconst.OFF
@@ -432,9 +432,9 @@ class MeasureConfiguration:
             :return:
             """
             if state == smuconst.OFF:
-                self.mycomms.write("smu.measure.filter.enable=smu.OFF")
+                self._mycomms.write("smu.measure.filter.enable=smu.OFF")
             else:
-                self.mycomms.write("smu.measure.filter.enable=smu.ON")
+                self._mycomms.write("smu.measure.filter.enable=smu.ON")
 
         @property
         def type(self):
@@ -444,8 +444,8 @@ class MeasureConfiguration:
 
             :return:
             """
-            self.mycomms.write("filterType = smu.measure.filter.type")
-            filtertype = self.mycomms.query("print(filterType)").rstrip()
+            self._mycomms.write("filterType = smu.measure.filter.type")
+            filtertype = self._mycomms.query("print(filterType)").rstrip()
             retconstval = None
             if "MOVING" in filtertype:
                 retconstval = smuconst.FILTER_MOVING_AVG
@@ -463,13 +463,13 @@ class MeasureConfiguration:
             :return:
             """
             if filtertype == smuconst.FILTER_MOVING_AVG:
-                self.mycomms.write("smu.measure.filter.type=smu.FILTER_MOVING_AVG")
+                self._mycomms.write("smu.measure.filter.type=smu.FILTER_MOVING_AVG")
             else:
-                self.mycomms.write("smu.measure.filter.enable=smu.FILTER_REPEAT_AVG")
+                self._mycomms.write("smu.measure.filter.enable=smu.FILTER_REPEAT_AVG")
 
     class Limit:
         def __init__(self):
-            self.mycomms = None
+            self._mycomms = None
 
         def audible(self, limit_number, state=None):
             """
@@ -482,8 +482,8 @@ class MeasureConfiguration:
             retconstval = None
 
             if state is None:
-                self.mycomms.write(f"state=smu.measure.limit[{limit_number}].audible")
-                audible = self.mycomms.query("print(state)").rstrip()
+                self._mycomms.write(f"state=smu.measure.limit[{limit_number}].audible")
+                audible = self._mycomms.query("print(state)").rstrip()
                 if "NONE" in audible:
                     retconstval = smuconst.AUDIBLE_NONE
                 elif "FAIL" in audible:
@@ -492,11 +492,11 @@ class MeasureConfiguration:
                     retconstval = smuconst.AUDIBLE_PASS
             else:
                 if state == smuconst.AUDIBLE_NONE:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_NONE")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_NONE")
                 elif state == smuconst.AUDIBLE_FAIL:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_FAIL")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_FAIL")
                 elif state == smuconst.AUDIBLE_PASS:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_PASS")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_PASS")
             return retconstval
 
         def autoclear(self, limit_number, state=None):
@@ -510,17 +510,17 @@ class MeasureConfiguration:
             retconstval = None
 
             if state is None:
-                self.mycomms.write(f"state=smu.measure.limit[{limit_number}].autoclear")
-                audible = self.mycomms.query("print(state)").rstrip()
+                self._mycomms.write(f"state=smu.measure.limit[{limit_number}].autoclear")
+                audible = self._mycomms.query("print(state)").rstrip()
                 if "ON" in audible:
                     retconstval = smuconst.ON
                 elif "OFF" in audible:
                     retconstval = smuconst.OFF
             else:
                 if state == smuconst.ON:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].autoclear = smu.ON")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].autoclear = smu.ON")
                 elif state == smuconst.OFF:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].autoclear = smu.OFF")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].autoclear = smu.OFF")
             return retconstval
 
         def clear(self, limit_number):
@@ -531,7 +531,7 @@ class MeasureConfiguration:
             :param limit_number: Either 1 or 2
             :return:
             """
-            self.mycomms.write(f"smu.measure.limit[{limit_number}].clear()")
+            self._mycomms.write(f"smu.measure.limit[{limit_number}].clear()")
 
         def enable(self, limit_number, state=None):
             """
@@ -544,17 +544,17 @@ class MeasureConfiguration:
             retconstval = None
 
             if state is None:
-                self.mycomms.write(f"state=smu.measure.limit[{limit_number}].enable")
-                audible = self.mycomms.query("print(state)").rstrip()
+                self._mycomms.write(f"state=smu.measure.limit[{limit_number}].enable")
+                audible = self._mycomms.query("print(state)").rstrip()
                 if "ON" in audible:
                     retconstval = smuconst.ON
                 elif "OFF" in audible:
                     retconstval = smuconst.OFF
             else:
                 if state == smuconst.ON:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].enable = smu.ON")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].enable = smu.ON")
                 elif state == smuconst.OFF:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].enable = smu.OFF")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].enable = smu.OFF")
             return retconstval
 
         def fail(self, limit_number):
@@ -566,8 +566,8 @@ class MeasureConfiguration:
             """
             retconstval = None
 
-            self.mycomms.write(f"result=smu.measure.limit[{limit_number}].fail")
-            audible = self.mycomms.query("print(result)").rstrip()
+            self._mycomms.write(f"result=smu.measure.limit[{limit_number}].fail")
+            audible = self._mycomms.query("print(result)").rstrip()
 
             if "NONE" in audible:
                 retconstval = smuconst.FAIL_NONE
@@ -592,22 +592,22 @@ class MeasureConfiguration:
             limit_value = 0.0
             if value is None:
                 if high_or_low == smuconst.FAIL_HIGH:
-                    self.mycomms.write(f"highLimit=smu.measure.limit[{limit_number}].high.value")
-                    limit_value = self.mycomms.query("print(highLimit)").rstrip()
+                    self._mycomms.write(f"highLimit=smu.measure.limit[{limit_number}].high.value")
+                    limit_value = self._mycomms.query("print(highLimit)").rstrip()
                 elif high_or_low == smuconst.FAIL_LOW:
-                    self.mycomms.write(f"lowLimit=smu.measure.limit[{limit_number}].low.value")
-                    limit_value = self.mycomms.query("print(lowLimit)").rstrip()
+                    self._mycomms.write(f"lowLimit=smu.measure.limit[{limit_number}].low.value")
+                    limit_value = self._mycomms.query("print(lowLimit)").rstrip()
             else:
                 if high_or_low == smuconst.FAIL_HIGH:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].high.value = {value}")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].high.value = {value}")
                 elif high_or_low == smuconst.FAIL_LOW:
-                    self.mycomms.write(f"smu.measure.limit[{limit_number}].low.value = {value}")
+                    self._mycomms.write(f"smu.measure.limit[{limit_number}].low.value = {value}")
 
             return limit_value
 
     class Math:
         def __init__(self):
-            self.mycomms = None
+            self._mycomms = None
 
         def enable(self, state=None):
             """
@@ -620,17 +620,17 @@ class MeasureConfiguration:
             retconstval = None
 
             if state is None:
-                self.mycomms.write(f"state = smu.measure.math.enable")
-                state = self.mycomms.query("print(state)").rstrip()
+                self._mycomms.write(f"state = smu.measure.math.enable")
+                state = self._mycomms.query("print(state)").rstrip()
                 if "ON" in state:
                     retconstval = smuconst.ON
                 elif "OFF" in state:
                     retconstval = smuconst.OFF
             else:
                 if state == smuconst.ON:
-                    self.mycomms.write(f"smu.measure.math.enable = smu.ON")
+                    self._mycomms.write(f"smu.measure.math.enable = smu.ON")
                 elif state == smuconst.OFF:
-                    self.mycomms.write(f"smu.measure.math.enable = smu.OFF")
+                    self._mycomms.write(f"smu.measure.math.enable = smu.OFF")
             return retconstval
 
         def format(self, operation):
@@ -644,8 +644,8 @@ class MeasureConfiguration:
             retconstval = None
 
             if operation is None:
-                self.mycomms.write(f"operation = smu.measure.math.format")
-                operation = self.mycomms.query("print(operation)").rstrip()
+                self._mycomms.write(f"operation = smu.measure.math.format")
+                operation = self._mycomms.query("print(operation)").rstrip()
                 if "MXB" in operation:
                     retconstval = smuconst.MATH_MXB
                 elif "PERCENT" in operation:
@@ -654,11 +654,11 @@ class MeasureConfiguration:
                     retconstval = smuconst.MATH_RECIPROCAL
             else:
                 if operation == smuconst.MATH_MXB:
-                    self.mycomms.write(f"smu.measure.math.format = smu.MATH_MXB")
+                    self._mycomms.write(f"smu.measure.math.format = smu.MATH_MXB")
                 elif operation == smuconst.MATH_PERCENT:
-                    self.mycomms.write(f"smu.measure.math.format = smu.PERCENT")
+                    self._mycomms.write(f"smu.measure.math.format = smu.PERCENT")
                 elif operation == smuconst.MATH_RECIPROCAL:
-                    self.mycomms.write(f"smu.measure.math.format = smu.RECIPROCAL")
+                    self._mycomms.write(f"smu.measure.math.format = smu.RECIPROCAL")
             return retconstval
 
         def mxb_bfactor(self, value):
@@ -671,11 +671,11 @@ class MeasureConfiguration:
             retconstval = None
 
             if value is None:
-                self.mycomms.write(f"value = smu.measure.math.mxb.bfactor")
-                value = self.mycomms.query("print(value)").rstrip()
+                self._mycomms.write(f"value = smu.measure.math.mxb.bfactor")
+                value = self._mycomms.query("print(value)").rstrip()
                 retconstval = value
             else:
-                self.mycomms.write(f"smu.measure.math.mxb.bfactor = {value}")
+                self._mycomms.write(f"smu.measure.math.mxb.bfactor = {value}")
             return retconstval
 
         def mxb_mfactor(self, value):
@@ -688,11 +688,11 @@ class MeasureConfiguration:
             retconstval = None
 
             if value is None:
-                self.mycomms.write(f"value = smu.measure.math.mxb.mfactor")
-                value = self.mycomms.query("print(value)").rstrip()
+                self._mycomms.write(f"value = smu.measure.math.mxb.mfactor")
+                value = self._mycomms.query("print(value)").rstrip()
                 retconstval = value
             else:
-                self.mycomms.write(f"smu.measure.math.mxb.mfactor = {value}")
+                self._mycomms.write(f"smu.measure.math.mxb.mfactor = {value}")
             return retconstval
 
         def percent(self, value):
@@ -705,11 +705,11 @@ class MeasureConfiguration:
             retconstval = None
 
             if value is None:
-                self.mycomms.write(f"value = smu.measure.math.percent")
-                value = self.mycomms.query("print(value)").rstrip()
+                self._mycomms.write(f"value = smu.measure.math.percent")
+                value = self._mycomms.query("print(value)").rstrip()
                 retconstval = value
             else:
-                self.mycomms.write(f"smu.measure.math.percent = {value}")
+                self._mycomms.write(f"smu.measure.math.percent = {value}")
             return retconstval
 
     @property
@@ -719,8 +719,8 @@ class MeasureConfiguration:
 
         :return: nplc
         """
-        self.mycomms.write("nplc=smu.measure.nplc")
-        nplc = float(self.mycomms.query("print(nplc)").rstrip())
+        self._mycomms.write("nplc=smu.measure.nplc")
+        nplc = float(self._mycomms.query("print(nplc)").rstrip())
         return nplc
 
     @nplc.setter
@@ -731,7 +731,7 @@ class MeasureConfiguration:
         :param nplc:
         :return:
         """
-        self.mycomms.write(f"smu.measure.nplc={nplc}")
+        self._mycomms.write(f"smu.measure.nplc={nplc}")
 
     @property
     def offsetcompensation(self):
@@ -741,8 +741,8 @@ class MeasureConfiguration:
         :return: Disable with 0 (OFF); enable with 1 (ON)
         """
         retval = None
-        self.mycomms.write("state = smu.measure.offsetcompensation")
-        state = self.mycomms.query("print(state)").rstrip()
+        self._mycomms.write("state = smu.measure.offsetcompensation")
+        state = self._mycomms.query("print(state)").rstrip()
         if "ON" in state:
             retval = smuconst.ON
         elif "OFF" in state:
@@ -758,9 +758,9 @@ class MeasureConfiguration:
         :return:
         """
         if state == smuconst.ON:
-            self.mycomms.write(f"smu.measure.offsetcompensation=smu.ON")
+            self._mycomms.write(f"smu.measure.offsetcompensation=smu.ON")
         else:
-            self.mycomms.write(f"smu.measure.offsetcompensation=smu.OFF")
+            self._mycomms.write(f"smu.measure.offsetcompensation=smu.OFF")
 
     @property
     def range(self):
@@ -770,8 +770,8 @@ class MeasureConfiguration:
         :return: The applied measure range.
         """
         retval = None
-        self.mycomms.write("rangeValue = smu.measure.range")
-        state = self.mycomms.query("print(rangeValue)").rstrip()
+        self._mycomms.write("rangeValue = smu.measure.range")
+        state = self._mycomms.query("print(rangeValue)").rstrip()
         return retval
 
     @range.setter
@@ -782,7 +782,7 @@ class MeasureConfiguration:
         :param rangeValue: Set to the maximum expected value to be measured
         :return:
         """
-        self.mycomms.write(f"smu.measure.range={rangeValue}")
+        self._mycomms.write(f"smu.measure.range={rangeValue}")
 
     def read(self, buffer_name=None):
         """
@@ -793,9 +793,9 @@ class MeasureConfiguration:
         :return: The last reading of the measurement process
         """
         if buffer_name is None:
-            reading = float(self.mycomms.query(f"print(smu.measure.read())").rstrip())
+            reading = float(self._mycomms.query(f"print(smu.measure.read())").rstrip())
         else:
-            reading = float(self.mycomms.query(f"print(smu.measure.read(\"{buffer_name}\")").rstrip())
+            reading = float(self._mycomms.query(f"print(smu.measure.read(\"{buffer_name}\")").rstrip())
         return reading
 
     def readwithtime(self, buffer_name=None):
@@ -810,17 +810,17 @@ class MeasureConfiguration:
                  fractional - Fractional seconds;
         """
         if buffer_name is None:
-            self.mycomms.write(f"reading,seconds,fractional=smu.measure.readwithtime())")
+            self._mycomms.write(f"reading,seconds,fractional=smu.measure.readwithtime())")
         else:
-            self.mycomms.write(f"reading,seconds,fractional=smu.measure.readwithtime(\"{buffer_name}\")")
-        reading = float(self.mycomms.query("print(reading)").rstrip())
-        seconds = int(self.mycomms.query("print(seconds)").rstrip())
-        fractional = float(self.mycomms.query("print(fractional)").rstrip())
+            self._mycomms.write(f"reading,seconds,fractional=smu.measure.readwithtime(\"{buffer_name}\")")
+        reading = float(self._mycomms.query("print(reading)").rstrip())
+        seconds = int(self._mycomms.query("print(seconds)").rstrip())
+        fractional = float(self._mycomms.query("print(fractional)").rstrip())
         return reading, seconds, fractional
 
     class Rel:
         def __init__(self):
-            self.mycomms = None
+            self._mycomms = None
 
         def acquire(self):
             """
@@ -828,8 +828,8 @@ class MeasureConfiguration:
 
             :return: The internal measurement acquired for the relative offset value.
             """
-            self.mycomms.write("relativeValue = smu.measure.rel.acquire()")
-            relative_value = float(self.mycomms.write("print(relative_value)").rstrip())
+            self._mycomms.write("relativeValue = smu.measure.rel.acquire()")
+            relative_value = float(self._mycomms.write("print(relative_value)").rstrip())
             return relative_value
 
         @property
@@ -840,8 +840,8 @@ class MeasureConfiguration:
             :return: Disabled 0 (OFF); enabled 1 (ON)
             """
             retval = None
-            self.mycomms.write("rel_enable = smu.measure.rel.enable")
-            state = self.mycomms.query("print(rel_enable)").rstrip()
+            self._mycomms.write("rel_enable = smu.measure.rel.enable")
+            state = self._mycomms.query("print(rel_enable)").rstrip()
             if "ON" in state:
                 retval = smuconst.ON
             elif "OFF" in state:
@@ -857,9 +857,9 @@ class MeasureConfiguration:
             :return:
             """
             if state == smuconst.ON:
-                self.mycomms.write("smu.measure.rel.enable = smu.ON")
+                self._mycomms.write("smu.measure.rel.enable = smu.ON")
             elif state == smuconst.OFF:
-                self.mycomms.write("smu.measure.rel.enable = smu.OFF")
+                self._mycomms.write("smu.measure.rel.enable = smu.OFF")
 
         @property
         def level(self):
@@ -868,8 +868,8 @@ class MeasureConfiguration:
 
             :return: Relative offset value for measurements.
             """
-            self.mycomms.write("rel_level = smu.measure.rel.level")
-            level = float(self.mycomms.query("print(rel_level)").rstrip())
+            self._mycomms.write("rel_level = smu.measure.rel.level")
+            level = float(self._mycomms.query("print(rel_level)").rstrip())
             return level
 
         @level.setter
@@ -880,12 +880,12 @@ class MeasureConfiguration:
             :param level: Relative offset value for measurements.
             :return:
             """
-            self.mycomms.write(f"smu.measure.rel.level = {level}")
+            self._mycomms.write(f"smu.measure.rel.level = {level}")
 
     @property
     def sense(self):
-        self.mycomms.write("sense_type=smu.measure.sense")
-        sense_type = self.mycomms.query("print(sense_type)")
+        self._mycomms.write("sense_type=smu.measure.sense")
+        sense_type = self._mycomms.query("print(sense_type)")
         return sense_type
 
     @sense.setter
@@ -896,4 +896,44 @@ class MeasureConfiguration:
             sense_string = "smu.SENSE_2WIRE"
         else:
             sense_string = "smu.SENSE_4WIRE"
-        self.mycomms.write(f"smu.measure.sense={sense_string}")
+        self._mycomms.write(f"smu.measure.sense={sense_string}")
+
+    @property
+    def unit(self):
+        """
+        This attribute gets the units of measurement that are displayed on the front panel of the instrument and stored
+        in the reading buffer.
+
+        :return: The units of measure to be displayed for the measurement - UNIT_AMP, UNIT_OHM, UNIT_VOLT, or UNIT_WATT
+        """
+        self._mycomms.write("unit_of_measure=smu.measure.unit")
+        unit_of_measure = self._mycomms.query("print(unit_of_measure)").rstrip()
+        if "AMP" in unit_of_measure:
+            return smuconst.UNIT_AMP
+        elif "OHM" in unit_of_measure:
+            return smuconst.UNIT_OHM
+        elif "VOLT" in unit_of_measure:
+            return smuconst.UNIT_VOLT
+        elif "WATT" in unit_of_measure:
+            return smuconst.UNIT_WATT
+        return 0
+
+    @unit.setter
+    def unit(self, unit_of_measure=smuconst.UNIT_AMP):
+        """
+        This attribute sets the units of measurement that are displayed on the front panel of the instrument and stored
+        in the reading buffer.
+
+        :param unit_of_measure: Set as either UNIT_AMP, UNIT_OHM, UNIT_VOLT, or UNIT_WATT.
+        :return:
+        """
+        unit_string = ""
+        if unit_of_measure is smuconst.UNIT_AMP:
+            unit_string = "smu.UNIT_AMP"
+        elif unit_of_measure is smuconst.UNIT_OHM:
+            unit_string = "smu.UNIT_OHM"
+        elif unit_of_measure is smuconst.UNIT_VOLT:
+            unit_string = "smu.UNIT_VOLT"
+        elif unit_of_measure is smuconst.UNIT_WATT:
+            unit_string = "smu.UNIT_WATT"
+        self._mycomms.write(f"smu.measure.unit={unit_string}")
