@@ -3,7 +3,7 @@ import KeithleySeries2400InteractiveSmu_Constants as smuconst
 
 class TriggerConfiguration:
     def __init__(self):
-        self.mycomms = None
+        self._mycomms = None
         self.model = self.Model()
 
     def update_comms(self):
@@ -13,13 +13,13 @@ class TriggerConfiguration:
 
         :return:
         """
-        self.model.mycomms = self.mycomms
+        self.model._mycomms = self._mycomms
         # self.configlist.mycomms = self.mycomms
         # self.filter.mycomms = self.mycomms
 
     class Model:
         def __init__(self):
-            self.mycomms = None
+            self._mycomms = None
 
         def initiate(self):
             """
@@ -27,7 +27,7 @@ class TriggerConfiguration:
 
             :return: None
             """
-            self.mycomms.write("trigger.model.initiate()")
+            self._mycomms.write("trigger.model.initiate()")
 
         def load_duration_loop(self, duration, delay=None, buffer_name=None):
             """
@@ -40,11 +40,11 @@ class TriggerConfiguration:
             :return: None
             """
             if buffer_name is not None:
-                self.mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration}, {delay}, {buffer_name})")
+                self._mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration}, {delay}, {buffer_name})")
             elif delay is not None:
-                self.mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration}, {delay})")
+                self._mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration}, {delay})")
             else:
-                self.mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration})")
+                self._mycomms.write(f"trigger.model.load(\"DurationLoop\", {duration})")
 
             print(0)
 
@@ -59,11 +59,11 @@ class TriggerConfiguration:
             :return: None
             """
             if buffer_name is not None:
-                self.mycomms.write(f"trigger.model.load(\"SimpleLoop\", {count}, {delay}, {buffer_name})")
+                self._mycomms.write(f"trigger.model.load(\"SimpleLoop\", {count}, {delay}, {buffer_name})")
             elif delay is not None:
-                self.mycomms.write(f"trigger.model.load(\"SimpleLoop\", {count}, {delay})")
+                self._mycomms.write(f"trigger.model.load(\"SimpleLoop\", {count}, {delay})")
             else:
-                self.mycomms.write(f"trigger.model.load(\"SimpleLoop\", {count})")
+                self._mycomms.write(f"trigger.model.load(\"SimpleLoop\", {count})")
 
         @property
         def state(self):
@@ -72,8 +72,8 @@ class TriggerConfiguration:
 
             :return: Will return one of the following: ABORTED, ABORTING, BUILDING, EMPTY, FAILED, IDLE, RUNNING
             """
-            self.mycomms.write("stat, stat, n = trigger.model.state()")
-            status = self.mycomms.query("print(stat)")
+            self._mycomms.write("stat, stat, n = trigger.model.state()")
+            status = self._mycomms.query("print(stat)")
             if "ABORTED" in status:
                 return smuconst.TRIGGER_STATE_ABORTED
             elif "ABORTING" in status:
