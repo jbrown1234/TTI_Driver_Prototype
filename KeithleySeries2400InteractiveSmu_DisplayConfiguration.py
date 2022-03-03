@@ -4,7 +4,7 @@ import KeithleySeries2400InteractiveSmu_Constants as smuconst
 
 class DisplayConfiguration:
     def __init__(self):
-        self.mycomms = None
+        self._mycomms = None
         self.input = self.Input()
 
     def update_comms(self):
@@ -14,7 +14,7 @@ class DisplayConfiguration:
 
         :return:
         """
-        self.input.mycomms = self.mycomms
+        self.input._mycomms = self._mycomms
 
     def change_screen(self, screen_name):
         """
@@ -50,8 +50,8 @@ class DisplayConfiguration:
         elif screen_name is smuconst.DISPLAY_SCREEN_USER_SWIPE:
             screen_string = "display.SCREEN_USER_SWIPE"
 
-        self.mycomms.write(f"display.changescreen({screen_string})")
+        self._mycomms.write(f"display.changescreen({screen_string})")
 
     class Input:
         def __init__(self):
-            self.mycomms = None
+            self._mycomms = None
