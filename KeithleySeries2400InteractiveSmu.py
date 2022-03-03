@@ -48,10 +48,10 @@ class KeithleySeries2400InteractiveSmu():
         try:
             self.instrumentcomms.initialize(instrument_resource_string, *args)
             #self.buffer.mycomms = self.instrumentcomms
-            self.display.mycomms = self.instrumentcomms
-            self.source.mycomms = self.instrumentcomms
-            self.measure.mycomms = self.instrumentcomms
-            self.trigger.mycomms = self.instrumentcomms
+            self.display._mycomms = self.instrumentcomms
+            self.source._mycomms = self.instrumentcomms
+            self.measure._mycomms = self.instrumentcomms
+            self.trigger._mycomms = self.instrumentcomms
             self.source.update_comms()
             self.measure.update_comms()
             self.trigger.update_comms()
