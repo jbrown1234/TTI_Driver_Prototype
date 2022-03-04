@@ -1,5 +1,5 @@
 import CommunicationsInterface as comms
-import KeithleySeries2400InteractiveSmu_Constants as smuconst
+import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 class TriggerConfiguration:
     def __init__(self):
@@ -75,16 +75,16 @@ class TriggerConfiguration:
             self._mycomms.write("stat, stat, n = trigger.model.state()")
             status = self._mycomms.query("print(stat)")
             if "ABORTED" in status:
-                return smuconst.TRIGGER_STATE_ABORTED
+                return _smuconst.TRIGGER_STATE_ABORTED
             elif "ABORTING" in status:
-                return smuconst.TRIGGER_STATE_ABORTING
+                return _smuconst.TRIGGER_STATE_ABORTING
             elif "BUILDING" in status:
-                return smuconst.TRIGGER_STATE_BUILDING
+                return _smuconst.TRIGGER_STATE_BUILDING
             elif "EMPTY" in status:
-                return smuconst.TRIGGER_STATE_EMPTY
+                return _smuconst.TRIGGER_STATE_EMPTY
             elif "FAIL" in status:
-                return smuconst.TRIGGER_STATE_FAILED
+                return _smuconst.TRIGGER_STATE_FAILED
             elif "IDLE" in status:
-                return smuconst.TRIGGER_STATE_IDLE
+                return _smuconst.TRIGGER_STATE_IDLE
             elif "RUNNING" in status:
-                return smuconst.TRIGGER_STATE_RUNNING
+                return _smuconst.TRIGGER_STATE_RUNNING
