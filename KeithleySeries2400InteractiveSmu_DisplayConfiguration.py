@@ -1,5 +1,5 @@
 import CommunicationsInterface as comms
-import KeithleySeries2400InteractiveSmu_Constants as smuconst
+import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
 class DisplayConfiguration:
@@ -27,27 +27,27 @@ class DisplayConfiguration:
         :return:
         """
         screen_string = ""
-        if screen_name is smuconst.DISPLAY_SCREEN_HOME:
+        if screen_name is _smuconst.DISPLAY_SCREEN_HOME:
             screen_string = "display.SCREEN_HOME"
-        elif screen_name is smuconst.DISPLAY_SCREEN_GRAPH:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_GRAPH:
             screen_string = "display.SCREEN_GRAPH"
-        elif screen_name is smuconst.DISPLAY_SCREEN_GRAPH_SWIPE:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_GRAPH_SWIPE:
             screen_string = "display.SCREEN_GRAPH_SWIPE"
-        elif screen_name is smuconst.DISPLAY_SCREEN_HISTOGRAM:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_HISTOGRAM:
             screen_string = "display.SCREEN_HISTOGRAM"
-        elif screen_name is smuconst.DISPLAY_SCREEN_HOME_LARGE_READING:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_HOME_LARGE_READING:
             screen_string = "display.SCREEN_HOME_LARGE_READING"
-        elif screen_name is smuconst.DISPLAY_SCREEN_PROCESSING:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_PROCESSING:
             screen_string = "display.SCREEN_PROCESSING"
-        elif screen_name is smuconst.DISPLAY_SCREEN_READING_TABLE:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_READING_TABLE:
             screen_string = "display.SCREEN_READING_TABLE"
-        elif screen_name is smuconst.DISPLAY_SCREEN_SETTINGS_SWIPE:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_SETTINGS_SWIPE:
             screen_string = "display.SCREEN_SETTINGS_SWIPE"
-        elif screen_name is smuconst.DISPLAY_SCREEN_SOURCE_SWIPE:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_SOURCE_SWIPE:
             screen_string = "display.SCREEN_SOURCE_SWIPE"
-        elif screen_name is smuconst.DISPLAY_SCREEN_STATS_SWIPE:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_STATS_SWIPE:
             screen_string = "display.SCREEN_STATS_SWIPE"
-        elif screen_name is smuconst.DISPLAY_SCREEN_USER_SWIPE:
+        elif screen_name is _smuconst.DISPLAY_SCREEN_USER_SWIPE:
             screen_string = "display.SCREEN_USER_SWIPE"
 
         self._mycomms.write(f"display.changescreen({screen_string})")
