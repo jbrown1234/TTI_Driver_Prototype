@@ -19,7 +19,10 @@ import KeithleySeries2400InteractiveSmu_MeasureConfiguration as measure_config
 import KeithleySeries2400InteractiveSmu_SourceConfiguration as source_config
 import KeithleySeries2400InteractiveSmu_TriggerConfiguration as trigger_config
 import KeithleySeries2400InteractiveSmu_DisplayConfiguration as display_config
-class KeithleySeries2400InteractiveSmu():
+import KeithleySeries2400InteractiveSmu_EventLogConfiguration as eventlog_config
+
+
+class KeithleySeries2400InteractiveSmu:
     def __init__(self):
         self.echocommand = 0
         self.node = 1
@@ -29,6 +32,7 @@ class KeithleySeries2400InteractiveSmu():
         self.instrumentcomms = comms.Communications()
         # self.buffer = self.Buffer()
         self.display = display_config.DisplayConfiguration()
+        self.eventlog = eventlog_config
         self.source = source_config.SourceConfiguration()
         self.measure = measure_config.MeasureConfiguration()
         self.trigger = trigger_config.TriggerConfiguration()
@@ -164,83 +168,38 @@ class KeithleySeries2400InteractiveSmu():
         :return: Any one of the table values as part of an instrument buffer.
         """
         write_string = "print("
-        #add_comma = False
+
         if readings:
             write_string += f"{buffer_name}.readings[{index}]"
-            #add_comma = True
         elif relativetimestamps:
-            #if add_comma:
-            #write_string += ","
             write_string += f"{buffer_name}.relativetimestamps[{index}]"
-            #add_comma = True
         elif formattedreadings:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.fractionalseconds[{index}]"
-            #add_comma = True
         elif fractionalseconds:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.fractionalseconds[{index}]"
-            #add_comma = True
         elif extravalues:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.extravalues[{index}]"
-            #add_comma = True
         elif extravalueunits:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.extravalueunits[{index}]"
-            #add_comma = True
         elif extraformattedvalues:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.extraformattedvalues[{index}]"
-            #add_comma = True
         elif dates:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.dates[{index}]"
-            #add_comma = True
         elif seconds:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.seconds[{index}]"
-            #add_comma = True
         elif sourceformattedvalues:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.sourceformattedvalues[{index}]"
-            #add_comma = True
         elif sourcestatuses:
-           # if add_comma:
-           #     write_string += ","
             write_string += f"{buffer_name}.sourcestatuses[{index}]"
-            #add_comma = True
         elif sourceunits:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.sourceunits[{index}]"
-            #add_comma = True
         elif statuses:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.statuses[{index}]"
-            #add_comma = True
         elif times:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.times[{index}]"
-            #add_comma = True
         elif timestamps:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.timestamps[{index}]"
-            #add_comma = True
         elif units:
-            #if add_comma:
-            #    write_string += ","
             write_string += f"{buffer_name}.units[{index}]"
         write_string += ")"
         return self.instrumentcomms.query(write_string).rstrip()
