@@ -1,5 +1,5 @@
 import CommunicationsInterface as comms
-import KeithleySeries2400InteractiveSmu_Constants as smuconst
+import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
 class MeasureConfiguration:
@@ -39,9 +39,9 @@ class MeasureConfiguration:
         self._mycomms.write("autorange = smu.measure.autorange")
         response = self._mycomms.query("print(autorange)").rstrip()
         if "ON" in response:
-            arange = smuconst.ON
+            arange = _smuconst.ON
         else:
-            arange = smuconst.OFF
+            arange = _smuconst.OFF
         return arange
 
     @autorange.setter
@@ -53,7 +53,7 @@ class MeasureConfiguration:
         :param value: Either 1 (ON) or 0 (OFF)
         :return:
         """
-        if value == smuconst.ON:
+        if value == _smuconst.ON:
             self._mycomms.write("smu.measure.autorange=smu.ON")
         else:
             self._mycomms.write("smu.measure.autorange=smu.OFF")
@@ -118,9 +118,9 @@ class MeasureConfiguration:
         response = self._mycomms.query("print(state)").rstrip()
         retconstval = None
         if "ON" in response:
-            retconstval = smuconst.ON
+            retconstval = _smuconst.ON
         else:
-            retconstval = smuconst.OFF
+            retconstval = _smuconst.OFF
         return retconstval
 
     @autorangerebound.setter
@@ -132,7 +132,7 @@ class MeasureConfiguration:
         :param state: Either 1 (ON) or 0 (OFF)
         :return:
         """
-        if state == smuconst.ON:
+        if state == _smuconst.ON:
             self._mycomms.write("smu.measure.autorangerebound=smu.ON")
         else:
             self._mycomms.write("smu.measure.autorangerebound=smu.OFF")
@@ -153,9 +153,9 @@ class MeasureConfiguration:
             response = self._mycomms.query("print(state)").rstrip()
             retconstval = None
             if "ON" in response:
-                retconstval = smuconst.ON
+                retconstval = _smuconst.ON
             else:
-                retconstval = smuconst.OFF
+                retconstval = _smuconst.OFF
             return retconstval
 
         @enable.setter
@@ -167,7 +167,7 @@ class MeasureConfiguration:
             :param state: Either 1 (ON) or 0 (OFF)
             :return:
             """
-            if state == smuconst.ON:
+            if state == _smuconst.ON:
                 self._mycomms.write("smu.measure.autorange.enable=smu.ON")
             else:
                 self._mycomms.write("smu.measure.autorange.enable=smu.OFF")
@@ -292,11 +292,11 @@ class MeasureConfiguration:
             :return:
             """
             function_str = None
-            if function == smuconst.FUNC_DC_VOLTAGE:
+            if function == _smuconst.FUNC_DC_VOLTAGE:
                 function_str = "smu.FUNC_DC_VOLTAGE"
-            elif function == smuconst.FUNC_DC_CURRENT:
+            elif function == _smuconst.FUNC_DC_CURRENT:
                 function_str = "smu.FUNC_DC_VOLTAGE"
-            elif function == smuconst.FUNC_DC_RESISTANCE:
+            elif function == _smuconst.FUNC_DC_RESISTANCE:
                 function_str = "smu.FUNC_DC_RESISTANCE"
 
             if index == None:
@@ -359,11 +359,11 @@ class MeasureConfiguration:
         response = self._mycomms.query("print(measfunc)").rstrip()
         retconstval = None
         if "VOLTAGE" in response:
-            retconstval = smuconst.FUNC_DC_VOLTAGE
+            retconstval = _smuconst.FUNC_DC_VOLTAGE
         elif "CURRENT" in response:
-            retconstval = smuconst.FUNC_DC_CURRENT
+            retconstval = _smuconst.FUNC_DC_CURRENT
         elif "RESISTANCE" in response:
-            retconstval = smuconst.FUNC_RESISTANCE
+            retconstval = _smuconst.FUNC_RESISTANCE
         return retconstval
 
     @function.setter
@@ -374,12 +374,12 @@ class MeasureConfiguration:
         :param func: Either 0 (FUNC_DC_VOLTAGE) or 1 (FUNC_DC_CURRENT)
         :return:
         """
-        if func == smuconst.FUNC_DC_VOLTAGE:
+        if func == _smuconst.FUNC_DC_VOLTAGE:
             self._mycomms.write("smu.measure.func = smu.FUNC_DC_VOLTAGE")
             # print()
-        elif func == smuconst.FUNC_DC_CURRENT:
+        elif func == _smuconst.FUNC_DC_CURRENT:
             self._mycomms.write("smu.measure.func = smu.FUNC_DC_CURRENT")
-        elif func == smuconst.FUNC_RESISTANCE:
+        elif func == _smuconst.FUNC_RESISTANCE:
             self._mycomms.write("smu.measure.func = smu.FUNC_RESISTANCE")
 
     class Filter:
@@ -418,9 +418,9 @@ class MeasureConfiguration:
             response = self._mycomms.query("print(filterState)").rstrip()
             retconstval = None
             if "OFF" in response:
-                retconstval = smuconst.OFF
+                retconstval = _smuconst.OFF
             else:
-                retconstval = smuconst.ON
+                retconstval = _smuconst.ON
             return retconstval
 
         @enable.setter
@@ -431,7 +431,7 @@ class MeasureConfiguration:
             :param state: Either 0 (OFF) or 1 (ON)
             :return:
             """
-            if state == smuconst.OFF:
+            if state == _smuconst.OFF:
                 self._mycomms.write("smu.measure.filter.enable=smu.OFF")
             else:
                 self._mycomms.write("smu.measure.filter.enable=smu.ON")
@@ -448,9 +448,9 @@ class MeasureConfiguration:
             filtertype = self._mycomms.query("print(filterType)").rstrip()
             retconstval = None
             if "MOVING" in filtertype:
-                retconstval = smuconst.FILTER_MOVING_AVG
+                retconstval = _smuconst.FILTER_MOVING_AVG
             else:
-                retconstval = smuconst.FILTER_REPEAT_AVG
+                retconstval = _smuconst.FILTER_REPEAT_AVG
             return retconstval
 
         @type.setter
@@ -462,7 +462,7 @@ class MeasureConfiguration:
             :param filtertype:
             :return:
             """
-            if filtertype == smuconst.FILTER_MOVING_AVG:
+            if filtertype == _smuconst.FILTER_MOVING_AVG:
                 self._mycomms.write("smu.measure.filter.type=smu.FILTER_MOVING_AVG")
             else:
                 self._mycomms.write("smu.measure.filter.enable=smu.FILTER_REPEAT_AVG")
@@ -485,17 +485,17 @@ class MeasureConfiguration:
                 self._mycomms.write(f"state=smu.measure.limit[{limit_number}].audible")
                 audible = self._mycomms.query("print(state)").rstrip()
                 if "NONE" in audible:
-                    retconstval = smuconst.AUDIBLE_NONE
+                    retconstval = _smuconst.AUDIBLE_NONE
                 elif "FAIL" in audible:
-                    retconstval = smuconst.AUDIBLE_FAIL
+                    retconstval = _smuconst.AUDIBLE_FAIL
                 elif "PASS" in audible:
-                    retconstval = smuconst.AUDIBLE_PASS
+                    retconstval = _smuconst.AUDIBLE_PASS
             else:
-                if state == smuconst.AUDIBLE_NONE:
+                if state == _smuconst.AUDIBLE_NONE:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_NONE")
-                elif state == smuconst.AUDIBLE_FAIL:
+                elif state == _smuconst.AUDIBLE_FAIL:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_FAIL")
-                elif state == smuconst.AUDIBLE_PASS:
+                elif state == _smuconst.AUDIBLE_PASS:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].audible = smu.AUDIBLE_PASS")
             return retconstval
 
@@ -513,13 +513,13 @@ class MeasureConfiguration:
                 self._mycomms.write(f"state=smu.measure.limit[{limit_number}].autoclear")
                 audible = self._mycomms.query("print(state)").rstrip()
                 if "ON" in audible:
-                    retconstval = smuconst.ON
+                    retconstval = _smuconst.ON
                 elif "OFF" in audible:
-                    retconstval = smuconst.OFF
+                    retconstval = _smuconst.OFF
             else:
-                if state == smuconst.ON:
+                if state == _smuconst.ON:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].autoclear = smu.ON")
-                elif state == smuconst.OFF:
+                elif state == _smuconst.OFF:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].autoclear = smu.OFF")
             return retconstval
 
@@ -547,13 +547,13 @@ class MeasureConfiguration:
                 self._mycomms.write(f"state=smu.measure.limit[{limit_number}].enable")
                 audible = self._mycomms.query("print(state)").rstrip()
                 if "ON" in audible:
-                    retconstval = smuconst.ON
+                    retconstval = _smuconst.ON
                 elif "OFF" in audible:
-                    retconstval = smuconst.OFF
+                    retconstval = _smuconst.OFF
             else:
-                if state == smuconst.ON:
+                if state == _smuconst.ON:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].enable = smu.ON")
-                elif state == smuconst.OFF:
+                elif state == _smuconst.OFF:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].enable = smu.OFF")
             return retconstval
 
@@ -570,13 +570,13 @@ class MeasureConfiguration:
             audible = self._mycomms.query("print(result)").rstrip()
 
             if "NONE" in audible:
-                retconstval = smuconst.FAIL_NONE
+                retconstval = _smuconst.FAIL_NONE
             elif "HIGH" in audible:
-                retconstval = smuconst.FAIL_HIGH
+                retconstval = _smuconst.FAIL_HIGH
             elif "LOW" in audible:
-                retconstval = smuconst.FAIL_LOW
+                retconstval = _smuconst.FAIL_LOW
             elif "BOTH" in audible:
-                retconstval = smuconst.FAIL_BOTH
+                retconstval = _smuconst.FAIL_BOTH
 
             return retconstval
 
@@ -591,16 +591,16 @@ class MeasureConfiguration:
             """
             limit_value = 0.0
             if value is None:
-                if high_or_low == smuconst.FAIL_HIGH:
+                if high_or_low == _smuconst.FAIL_HIGH:
                     self._mycomms.write(f"highLimit=smu.measure.limit[{limit_number}].high.value")
                     limit_value = self._mycomms.query("print(highLimit)").rstrip()
-                elif high_or_low == smuconst.FAIL_LOW:
+                elif high_or_low == _smuconst.FAIL_LOW:
                     self._mycomms.write(f"lowLimit=smu.measure.limit[{limit_number}].low.value")
                     limit_value = self._mycomms.query("print(lowLimit)").rstrip()
             else:
-                if high_or_low == smuconst.FAIL_HIGH:
+                if high_or_low == _smuconst.FAIL_HIGH:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].high.value = {value}")
-                elif high_or_low == smuconst.FAIL_LOW:
+                elif high_or_low == _smuconst.FAIL_LOW:
                     self._mycomms.write(f"smu.measure.limit[{limit_number}].low.value = {value}")
 
             return limit_value
@@ -623,13 +623,13 @@ class MeasureConfiguration:
                 self._mycomms.write(f"state = smu.measure.math.enable")
                 state = self._mycomms.query("print(state)").rstrip()
                 if "ON" in state:
-                    retconstval = smuconst.ON
+                    retconstval = _smuconst.ON
                 elif "OFF" in state:
-                    retconstval = smuconst.OFF
+                    retconstval = _smuconst.OFF
             else:
-                if state == smuconst.ON:
+                if state == _smuconst.ON:
                     self._mycomms.write(f"smu.measure.math.enable = smu.ON")
-                elif state == smuconst.OFF:
+                elif state == _smuconst.OFF:
                     self._mycomms.write(f"smu.measure.math.enable = smu.OFF")
             return retconstval
 
@@ -647,17 +647,17 @@ class MeasureConfiguration:
                 self._mycomms.write(f"operation = smu.measure.math.format")
                 operation = self._mycomms.query("print(operation)").rstrip()
                 if "MXB" in operation:
-                    retconstval = smuconst.MATH_MXB
+                    retconstval = _smuconst.MATH_MXB
                 elif "PERCENT" in operation:
-                    retconstval = smuconst.MATH_PERCENT
+                    retconstval = _smuconst.MATH_PERCENT
                 elif "RECPROCAL" in operation:
-                    retconstval = smuconst.MATH_RECIPROCAL
+                    retconstval = _smuconst.MATH_RECIPROCAL
             else:
-                if operation == smuconst.MATH_MXB:
+                if operation == _smuconst.MATH_MXB:
                     self._mycomms.write(f"smu.measure.math.format = smu.MATH_MXB")
-                elif operation == smuconst.MATH_PERCENT:
+                elif operation == _smuconst.MATH_PERCENT:
                     self._mycomms.write(f"smu.measure.math.format = smu.PERCENT")
-                elif operation == smuconst.MATH_RECIPROCAL:
+                elif operation == _smuconst.MATH_RECIPROCAL:
                     self._mycomms.write(f"smu.measure.math.format = smu.RECIPROCAL")
             return retconstval
 
@@ -744,9 +744,9 @@ class MeasureConfiguration:
         self._mycomms.write("state = smu.measure.offsetcompensation")
         state = self._mycomms.query("print(state)").rstrip()
         if "ON" in state:
-            retval = smuconst.ON
+            retval = _smuconst.ON
         elif "OFF" in state:
-            retval = smuconst.OFF
+            retval = _smuconst.OFF
         return retval
 
     @offsetcompensation.setter
@@ -757,7 +757,7 @@ class MeasureConfiguration:
         :param state: To disable, 0 (OFF); to enable 1 (ON)
         :return:
         """
-        if state == smuconst.ON:
+        if state == _smuconst.ON:
             self._mycomms.write(f"smu.measure.offsetcompensation=smu.ON")
         else:
             self._mycomms.write(f"smu.measure.offsetcompensation=smu.OFF")
@@ -843,9 +843,9 @@ class MeasureConfiguration:
             self._mycomms.write("rel_enable = smu.measure.rel.enable")
             state = self._mycomms.query("print(rel_enable)").rstrip()
             if "ON" in state:
-                retval = smuconst.ON
+                retval = _smuconst.ON
             elif "OFF" in state:
-                retval = smuconst.OFF
+                retval = _smuconst.OFF
             return retval
 
         @enable.setter
@@ -856,9 +856,9 @@ class MeasureConfiguration:
             :param state: Disable with 0 (OFF); enable with 1 (ON)
             :return:
             """
-            if state == smuconst.ON:
+            if state == _smuconst.ON:
                 self._mycomms.write("smu.measure.rel.enable = smu.ON")
-            elif state == smuconst.OFF:
+            elif state == _smuconst.OFF:
                 self._mycomms.write("smu.measure.rel.enable = smu.OFF")
 
         @property
@@ -889,10 +889,10 @@ class MeasureConfiguration:
         return sense_type
 
     @sense.setter
-    def sense(self, sense_type=smuconst.SENSE_2WIRE):
+    def sense(self, sense_type=_smuconst.SENSE_2WIRE):
 
         sense_string = ""
-        if sense_type is smuconst.SENSE_2WIRE:
+        if sense_type is _smuconst.SENSE_2WIRE:
             sense_string = "smu.SENSE_2WIRE"
         else:
             sense_string = "smu.SENSE_4WIRE"
@@ -909,17 +909,17 @@ class MeasureConfiguration:
         self._mycomms.write("unit_of_measure=smu.measure.unit")
         unit_of_measure = self._mycomms.query("print(unit_of_measure)").rstrip()
         if "AMP" in unit_of_measure:
-            return smuconst.UNIT_AMP
+            return _smuconst.UNIT_AMP
         elif "OHM" in unit_of_measure:
-            return smuconst.UNIT_OHM
+            return _smuconst.UNIT_OHM
         elif "VOLT" in unit_of_measure:
-            return smuconst.UNIT_VOLT
+            return _smuconst.UNIT_VOLT
         elif "WATT" in unit_of_measure:
-            return smuconst.UNIT_WATT
+            return _smuconst.UNIT_WATT
         return 0
 
     @unit.setter
-    def unit(self, unit_of_measure=smuconst.UNIT_AMP):
+    def unit(self, unit_of_measure=_smuconst.UNIT_AMP):
         """
         This attribute sets the units of measurement that are displayed on the front panel of the instrument and stored
         in the reading buffer.
@@ -928,12 +928,12 @@ class MeasureConfiguration:
         :return:
         """
         unit_string = ""
-        if unit_of_measure is smuconst.UNIT_AMP:
+        if unit_of_measure is _smuconst.UNIT_AMP:
             unit_string = "smu.UNIT_AMP"
-        elif unit_of_measure is smuconst.UNIT_OHM:
+        elif unit_of_measure is _smuconst.UNIT_OHM:
             unit_string = "smu.UNIT_OHM"
-        elif unit_of_measure is smuconst.UNIT_VOLT:
+        elif unit_of_measure is _smuconst.UNIT_VOLT:
             unit_string = "smu.UNIT_VOLT"
-        elif unit_of_measure is smuconst.UNIT_WATT:
+        elif unit_of_measure is _smuconst.UNIT_WATT:
             unit_string = "smu.UNIT_WATT"
         self._mycomms.write(f"smu.measure.unit={unit_string}")
