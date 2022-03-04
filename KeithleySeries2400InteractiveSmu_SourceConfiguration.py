@@ -1,10 +1,9 @@
 import CommunicationsInterface as comms
-import KeithleySeries2400InteractiveSmu_Constants as smuconst
+import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
 class SourceConfiguration:
     def __init__(self):
-        #self.range = None
         self._mycomms = None
         self.configlist = self.ConfigList()
         self.protect = self.Protect()
@@ -84,13 +83,13 @@ class SourceConfiguration:
             :param source_index:
             :return:
             """
-            if source_index == None:
-                if index == None:
+            if source_index is None:
+                if index is None:
                     self._mycomms.write(f"smu.source.configlist.recall(\"{list_name}\")")
                 else:
                     self._mycomms.write(f"smu.source.configlist.recall(\"{list_name}\", {index})")
             else:
-                if source_index == None:
+                if source_index is None:
                     self._mycomms.write(
                         f"smu.source.configlist.recall(\"{list_name}\", {index}),\"{source_list_name}\")")
                 else:
@@ -116,7 +115,7 @@ class SourceConfiguration:
             :param index:
             :return:
             """
-            if index == None:
+            if index is None:
                 self._mycomms.write(f"smu.source.configlist.store(\"{list_name}\")")
             else:
                 self._mycomms.write(f"smu.source.configlist.store(\"{list_name}\", {index})")
@@ -132,14 +131,14 @@ class SourceConfiguration:
             :return:
             """
             function_str = None
-            if function == smuconst.FUNC_DC_VOLTAGE:
+            if function == _smuconst.FUNC_DC_VOLTAGE:
                 function_str = "smu.FUNC_DC_VOLTAGE"
-            elif function == smuconst.FUNC_DC_CURRENT:
+            elif function == _smuconst.FUNC_DC_CURRENT:
                 function_str = "smu.FUNC_DC_VOLTAGE"
-            elif function == smuconst.FUNC_RESISTANCE:
+            elif function == _smuconst.FUNC_RESISTANCE:
                 function_str = "smu.FUNC_DC_RESISTANCE"
 
-            if index == None:
+            if index is None:
                 self._mycomms.write(f"smu.source.configlist.storefunc(\"{list_name}\", {function_str})")
             else:
                 self._mycomms.write(f"smu.source.configlist.storefunc(\"{list_name}\", {function_str}, {index})")
@@ -155,15 +154,15 @@ class SourceConfiguration:
         response = self._mycomms.query("print(srcfunc)").rstrip()
         # retconstval = None
         if "VOLTAGE" in response:
-            retconstval = smuconst.FUNC_DC_VOLTAGE
+            retconstval = _smuconst.FUNC_DC_VOLTAGE
         else:
-            retconstval = smuconst.FUNC_DC_CURRENT
+            retconstval = _smuconst.FUNC_DC_CURRENT
         return retconstval
 
     @func.setter
     def func(self, func):
         """This attribute contains the source function, which can be voltage or current."""
-        if func == smuconst.FUNC_DC_VOLTAGE:
+        if func == _smuconst.FUNC_DC_VOLTAGE:
             self._mycomms.write("smu.source.func = smu.FUNC_DC_VOLTAGE")
             # print()
         else:
@@ -202,6 +201,90 @@ class SourceConfiguration:
             self._mycomms.write("ilimittrip = smu.source.ilimit.tripped")
             return int(self._mycomms.query("print(ilimittrip)").rstrip())
 
+    @property
+    def offmode(self):
+        """
+        This attribute defines the state of the source when the output is turned off.
+
+            NORMAL = 2-wire sense, voltage source with 0 V level, current limit level set to 10% full scale of present
+                     range
+            HIGHZ = 2-wire sense, output relay opens
+            ZERO = 2-wire sense, voltage source with 0 V level, if current measure set then current limit level is not
+                   changed otherwise the measurement is set to current and limit level is set to 10% full scale of
+                   present range
+            GUARD = 2-wire sense, current source selected and set to 0 A level, voltage limit level set to 10% full
+                    scale of present range
+
+        :return: Either OFFMODE_NORMAL, OFFMODE_HIGHZ, OFFMODE_ZERO, or OFFMODE_GUARD
+        """
+        self._mycomms.write("source_off_mode = smu.source.offmode")
+        source_off_mode = self._mycomms.query("print(source_off_mode)").rstrip()
+        if "NORMAL" in source_off_mode:
+            return _smuconst.OFFMODE_NORMAL
+        elif "HIGHZ" in source_off_mode:
+            return _smuconst.OFFMODE_HIGHZ
+        elif "ZERO" in source_off_mode:
+            return _smuconst.OFFMODE_ZERO
+        elif "GUARD" in source_off_mode:
+            return _smuconst.OFFMODE_GUARD
+
+    @offmode.setter
+    def offmode(self, source_off_mode):
+        """
+        This attribute defines the state of the source when the output is turned off.
+
+            NORMAL = 2-wire sense, voltage source with 0 V level, current limit level set to 10% full scale of present
+                     range
+            HIGHZ = 2-wire sense, output relay opens
+            ZERO = 2-wire sense, voltage source with 0 V level, if current measure set then current limit level is not
+                   changed otherwise the measurement is set to current and limit level is set to 10% full scale of
+                   present range
+            GUARD = 2-wire sense, current source selected and set to 0 A level, voltage limit level set to 10% full
+                    scale of present range
+
+        :param source_off_mode: Either OFFMODE_NORMAL, OFFMODE_HIGHZ, OFFMODE_ZERO, or OFFMODE_GUARD
+        :return:
+        """
+        if source_off_mode is _smuconst.OFFMODE_NORMAL:
+            self._mycomms.write("smu.source.offmode = smu.OFFMODE_NORMAL")
+        elif source_off_mode is _smuconst.OFFMODE_HIGHZ:
+            self._mycomms.write("smu.source.offmode = smu.OFFMODE_HIGHZ")
+        elif source_off_mode is _smuconst.OFFMODE_ZERO:
+            self._mycomms.write("smu.source.offmode = smu.OFFMODE_ZERO")
+        elif source_off_mode is _smuconst.OFFMODE_GUARD:
+            self._mycomms.write("smu.source.offmode = smu.OFFMODE_GUARD")
+
+    @property
+    def readback(self):
+        """
+        This attribute determines if the instrument records the measured source value or the configured source value
+        when making a measurement.
+
+        :return: Either ON (1) or OFF (0)
+        """
+        self._mycomms.write("readback_state = smu.source.readback")
+        source_readback = self._mycomms.query("print(readback_state)")
+        if "ON" in source_readback:
+            return _smuconst.ON
+        elif "OFF" in source_readback:
+            return _smuconst.OFF
+        else:
+            return _smuconst.OFF  # default to the off state
+
+    @readback.setter
+    def readback(self, state):
+        """
+        This attribute determines if the instrument records the measured source value or the configured source value
+        when making a measurement.
+
+        :param state: Either ON (1) or OFF (0)
+        :return:
+        """
+        if state is _smuconst.ON:
+            self._mycomms.write("smu.source.readback=smu.ON")
+        else:
+            self._mycomms.write("smu.source.readback=smu.OFF")
+
     class VLimit:
         def __init__(self):
             self._mycomms = None
@@ -233,11 +316,11 @@ class SourceConfiguration:
         self._mycomms.write("source_output = smu.source.output")
         source_output = self._mycomms.query("print(source_output)")
         if "ON" in source_output:
-            return smuconst.ON
+            return _smuconst.ON
         elif "OFF" in source_output:
-            return smuconst.OFF
+            return _smuconst.OFF
         else:
-            return smuconst.OFF     # default to the off state
+            return _smuconst.OFF     # default to the off state
 
     @output.setter
     def output(self, state):
@@ -247,7 +330,7 @@ class SourceConfiguration:
         :param state: Either ON (1) or OFF (0)
         :return: None
         """
-        if state is smuconst.ON:
+        if state is _smuconst.ON:
             self._mycomms.write("smu.source.output=smu.ON")
         else:
             self._mycomms.write("smu.source.output=smu.OFF")
