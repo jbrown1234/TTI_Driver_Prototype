@@ -20,6 +20,7 @@ import sys
 import os
 import time
 
+
 class Communications:
     def __init__(self):
         self.resource_manager = None
