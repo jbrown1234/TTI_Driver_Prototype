@@ -1,11 +1,9 @@
-import CommunicationsInterface as comms
 import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
 class MeasureConfiguration:
     def __init__(self):
         self._mycomms = None
-        # self.range = None
         self.autozero = self.AutoZero()
         self.configlist = self.ConfigList()
         self.filter = self.Filter()
@@ -316,14 +314,14 @@ class MeasureConfiguration:
         return count
 
     @count.setter
-    def count(self, count):
+    def count(self, measure_count):
         """
         This attribute sets the number of measurements to make when a measurement is requested.
 
         :param count:
         :return:
         """
-        self._mycomms.write(f"smu.measure.count={count}")
+        self._mycomms.write(f"smu.measure.count={measure_count}")
 
     @property
     def displaydigits(self):
@@ -769,20 +767,19 @@ class MeasureConfiguration:
 
         :return: The applied measure range.
         """
-        retval = None
-        self._mycomms.write("rangeValue = smu.measure.range")
-        state = self._mycomms.query("print(rangeValue)").rstrip()
-        return retval
+        self._mycomms.write("range_value = smu.measure.range")
+        range_value = self._mycomms.query("print(range_value)").rstrip()
+        return range_value
 
     @range.setter
-    def range(self, rangeValue):
+    def range(self, range_value):
         """
         This attribute determines the positive full-scale measure range.
 
-        :param rangeValue: Set to the maximum expected value to be measured
+        :param range_value: Set to the maximum expected value to be measured
         :return:
         """
-        self._mycomms.write(f"smu.measure.range={rangeValue}")
+        self._mycomms.write(f"smu.measure.range={range_value}")
 
     def read(self, buffer_name=None):
         """
