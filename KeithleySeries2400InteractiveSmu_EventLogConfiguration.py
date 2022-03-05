@@ -1,4 +1,3 @@
-import CommunicationsInterface as _comms
 import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
@@ -22,7 +21,7 @@ class EventLogConfiguration:
 
         :return:
         """
-        self._mycomms.write("smu.eventlog.clear()")
+        self._mycomms.write("eventlog.clear()")
 
     def getcount(self, event_type=None):
         event_count = 0
