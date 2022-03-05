@@ -1,4 +1,3 @@
-import CommunicationsInterface as comms
 import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
@@ -142,6 +141,27 @@ class SourceConfiguration:
                 self._mycomms.write(f"smu.source.configlist.storefunc(\"{list_name}\", {function_str})")
             else:
                 self._mycomms.write(f"smu.source.configlist.storefunc(\"{list_name}\", {function_str}, {index})")
+
+    @property
+    def delay(self):
+        """
+        This attribute contains the source delay.
+
+        :return: The length of the delay
+        """
+        self._mycomms.write("delay_value = smu.source.delay")
+        delay_value = float(self._mycomms.query("print(delay_value)").rstrip())
+        return delay_value
+
+    @delay.setter
+    def delay(self, delay_value):
+        """
+        This attribute contains the source delay.
+
+        :param delay_value: The length of the delay (0 to 10 ks)
+        :return:
+        """
+        self._mycomms.write(f"smu.source.delay={delay_value}")
 
     class Protect:
         def __init__(self):
@@ -334,3 +354,24 @@ class SourceConfiguration:
             self._mycomms.write("smu.source.output=smu.ON")
         else:
             self._mycomms.write("smu.source.output=smu.OFF")
+
+    @property
+    def range(self):
+        """
+        This attribute determines the positive full-scale source range.
+
+        :return: The applied source range.
+        """
+        self._mycomms.write("range_value = smu.source.range")
+        range_value = float(self._mycomms.query("print(range_value)").rstrip())
+        return range_value
+
+    @range.setter
+    def range(self, range_value):
+        """
+        This attribute determines the positive full-scale source range.
+
+        :param range_value: The applied source range.
+        :return:
+        """
+        self._mycomms.write(f"smu.source.range={range_value}")
