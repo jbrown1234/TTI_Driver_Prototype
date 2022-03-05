@@ -20,6 +20,7 @@ import KeithleySeries2400InteractiveSmu_SourceConfiguration as source_config
 import KeithleySeries2400InteractiveSmu_TriggerConfiguration as trigger_config
 import KeithleySeries2400InteractiveSmu_DisplayConfiguration as display_config
 import KeithleySeries2400InteractiveSmu_EventLogConfiguration as eventlog_config
+import KeithleySeries2400InteractiveSmu_LocalNodeConfiguration as localnode_config
 
 
 class KeithleySeries2400InteractiveSmu:
@@ -32,7 +33,8 @@ class KeithleySeries2400InteractiveSmu:
         self.instrumentcomms = comms.Communications()
         # self.buffer = self.Buffer()
         self.display = display_config.DisplayConfiguration()
-        self.eventlog = eventlog_config
+        self.eventlog = eventlog_config.EventLogConfiguration()
+        self.localnode = localnode_config.LocalNodeConfiguration()
         self.source = source_config.SourceConfiguration()
         self.measure = measure_config.MeasureConfiguration()
         self.trigger = trigger_config.TriggerConfiguration()
@@ -51,8 +53,10 @@ class KeithleySeries2400InteractiveSmu:
 
         try:
             self.instrumentcomms.initialize(instrument_resource_string, *args)
-            #self.buffer.mycomms = self.instrumentcomms
+            # self.buffer.mycomms = self.instrumentcomms
             self.display._mycomms = self.instrumentcomms
+            self.eventlog._mycomms = self.instrumentcomms
+            self.localnode._mycomms = self.instrumentcomms
             self.source._mycomms = self.instrumentcomms
             self.measure._mycomms = self.instrumentcomms
             self.trigger._mycomms = self.instrumentcomms
