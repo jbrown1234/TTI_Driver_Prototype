@@ -1,11 +1,10 @@
-import CommunicationsInterface as comms
-import KeithleySeries2400InteractiveSmu_Constants as smuconst
+import KeithleySeries2400InteractiveSmu_Constants as _smuconst
+
 
 class Buffer:
     def __init__(self):
         self.mycomms = None
 
-    # @property
     def capacity(self, buffername="defbuffer1", buffer_capacity=None):
         """
         This attribute gets or sets the number of readings a buffer can store. When the
