@@ -1,4 +1,3 @@
-import CommunicationsInterface as comms
 import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
