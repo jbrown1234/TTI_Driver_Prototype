@@ -13,39 +13,47 @@
 #   limitations under the License.
 #
 
-# ********************************************************************************
+# *****************************************************************************
 #
 # Example Description:
 #
-#       This example code designed to discharge a battery and create a battery model for use
-#       in a Keithley Model 2281S-20-6 Battery Simulator and Precision DC Power Supply.  It will run
+#       This example code designed to discharge a battery and create a battery
+#       model for use in a Keithley Model 2281S-20-6 Battery Simulator and
+#       Precision DC Power Supply.  It will run
 #       on any of the following Keithley instruments:
 # 	        * Model 2450 SourceMeter
 # 	        * Model 2460 SourceMeter
 # 	        * Model 2461 SourceMeter
 #
-#       This code was adapted from the Keithley Applications Engineering TSP script
-#       courtesy of Al Ivons.
+#       This code was adapted from the Keithley Applications Engineering TSP 
+#       script courtesy of Al Ivons.
 #
-# ********************************************************************************
+# *****************************************************************************
+import time
 import KeithleySeries2400InteractiveSmu as KeiSmu
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
-import time
 
 smu = KeiSmu.KeithleySeries2400InteractiveSmu()
 
-test_parameters ={
+test_parameters = {
     'terminals': None
 }
 
 
 def configure_system(do_beeps):
+    """
+    description
+
+    parameter: do_beeps
+    returns: None
+    """
     smu.reset()
     smu.display.change_screen(smuconst.DISPLAY_SCREEN_HOME)
 
     smu.eventlog.clear()
 
-    selection = input("Enter the terminals you are using: 'F' for FRONT or 'R' for REAR: ")
+    selection = input("Enter the terminals you are using: 'F' for FRONT or 'R'\
+         for REAR: ")
     if "F" in selection.upper():
         smu.terminals = smuconst.TERMINALS_FRONT
         test_parameters['terminals'] = smuconst.TERMINALS_FRONT
@@ -60,9 +68,12 @@ def configure_system(do_beeps):
     smu.source.offmode = smuconst.OFFMODE_HIGHZ
     smu.source.readback = smuconst.OFF
 
-    smu.source.level = 0.0          # Amps; zero is default value
-    smu.source.range = 0.001        # Amps; automatically disables source autorange.  Was 0.1;
-    smu.source.delay = 0.0          # Seconds; automatically disables source autodelay
+    # Amps; zero is default value
+    smu.source.level = 0.0
+    # Amps; automatically disables source autorange. Was 0.1;
+    smu.source.range = 0.001
+    # Seconds; automatically disables source autodelay
+    smu.source.delay = 0.0
 
     # Configure measure settings
     smu.measure.function = smuconst.FUNC_DC_VOLTAGE
@@ -91,4 +102,5 @@ def configure_system(do_beeps):
 
 
 smu.initialize("USB0::0x05E6::0x2460::04312353::INSTR")
-configure_system(True)
+val, ret_str = configure_system(True)
+print(f"{val}, {ret_str}")
