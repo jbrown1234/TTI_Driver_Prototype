@@ -25,11 +25,11 @@
 # 	        * Model 2460 SourceMeter
 # 	        * Model 2461 SourceMeter
 #
-#       This code was adapted from the Keithley Applications Engineering TSP 
+#       This code was adapted from the Keithley Applications Engineering TSP
 #       script courtesy of Al Ivons.
 #
 # *****************************************************************************
-import time
+# import time
 import KeithleySeries2400InteractiveSmu as KeiSmu
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
 
@@ -40,7 +40,7 @@ test_parameters = {
 }
 
 
-def configure_system(do_beeps):
+def configure_system():  # temporarily removed the do_beeps parameter
     """
     description
 
@@ -102,5 +102,5 @@ def configure_system(do_beeps):
 
 
 smu.initialize("USB0::0x05E6::0x2460::04312353::INSTR")
-val, ret_str = configure_system(True)
+val, ret_str = configure_system()
 print(f"{val}, {ret_str}")
