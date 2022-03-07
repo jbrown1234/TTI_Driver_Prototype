@@ -1,7 +1,24 @@
+#  Copyright 2022 Joshua Brown
+#
+#   Licensed under the Apache License, Version 2.0 (the "License");
+#   you may not use this file except in compliance with the License.
+#   You may obtain a copy of the License at
+#
+#       http://www.apache.org/licenses/LICENSE-2.0
+#
+#   Unless required by applicable law or agreed to in writing, software
+#   distributed under the License is distributed on an "AS IS" BASIS,
+#   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+#   See the License for the specific language governing permissions and
+#   limitations under the License.
+
 import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
 class SourceConfiguration:
+    """
+    Placeholder docstring description
+    """
     def __init__(self):
         self._mycomms = None
         self.configlist = self.ConfigList()
@@ -19,6 +36,9 @@ class SourceConfiguration:
         self.vlimit._mycomms = self._mycomms
 
     class ConfigList:
+        """
+        Placeholder docstring description
+        """
         def __init__(self):
             self._mycomms = None
 
@@ -66,7 +86,7 @@ class SourceConfiguration:
 
             :return:
             """
-            if field_separator == None:
+            if field_separator is None:
                 self._mycomms.query(f"print(smu.source.configlist.query(\"{list_name}\", {index}))")
             else:
                 self._mycomms.query(f"print(smu.source.configlist.query(\"{list_name}\", {index}, {field_separator}))")
@@ -164,6 +184,9 @@ class SourceConfiguration:
         self._mycomms.write(f"smu.source.delay={delay_value}")
 
     class Protect:
+        """
+        Placeholder docstring description
+        """
         def __init__(self):
             self._mycomms = None
 
@@ -201,6 +224,9 @@ class SourceConfiguration:
         self._mycomms.write(f"smu.source.level = {value}")
 
     class ILimit:
+        """
+        Placeholder docstring description
+        """
         def __init__(self):
             self._mycomms = None
 
@@ -306,6 +332,9 @@ class SourceConfiguration:
             self._mycomms.write("smu.source.readback=smu.OFF")
 
     class VLimit:
+        """
+        Placeholder docstring description
+        """
         def __init__(self):
             self._mycomms = None
 
