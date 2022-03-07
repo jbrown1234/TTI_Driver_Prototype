@@ -21,5 +21,5 @@ class LocalNodeConfiguration:
 
         :return: The model number of the instrument
         """
-        return self._mycomms.query("print(localnode.model)").rstrip()
+        return self._mycomms.query("print(localnode.model)")
 
