@@ -12,18 +12,23 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import pyvisa as visa
+
 import CommunicationsInterface as comms
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
 import KeithleySeries2400InteractiveSmu_MeasureConfiguration as measure_config
 import KeithleySeries2400InteractiveSmu_SourceConfiguration as source_config
 import KeithleySeries2400InteractiveSmu_TriggerConfiguration as trigger_config
 import KeithleySeries2400InteractiveSmu_DisplayConfiguration as display_config
-import KeithleySeries2400InteractiveSmu_EventLogConfiguration as eventlog_config
-import KeithleySeries2400InteractiveSmu_LocalNodeConfiguration as localnode_config
+import KeithleySeries2400InteractiveSmu_EventLogConfiguration as \
+    eventlog_config
+import KeithleySeries2400InteractiveSmu_LocalNodeConfiguration as \
+    localnode_config
 
 
 class KeithleySeries2400InteractiveSmu:
+    """
+    Placeholder docstring
+    """
     def __init__(self):
         self.echocommand = 0
         self.node = 1
@@ -40,17 +45,16 @@ class KeithleySeries2400InteractiveSmu:
         self.trigger = trigger_config.TriggerConfiguration()
 
     class InstrumentConnection(object):
+        """
+        Placeholder docstring description.
+        """
         def __init__(self):
             self.resourcerm = None
 
-        def initialize(self):
-            return
-
-        def close(self):
-            return
-
     def initialize(self, instrument_resource_string, *args):
-
+        """
+        Placeholder docstring descriptions.
+        """
         try:
             self.instrumentcomms.initialize(instrument_resource_string, *args)
             # self.buffer.mycomms = self.instrumentcomms
@@ -64,31 +68,39 @@ class KeithleySeries2400InteractiveSmu:
             self.measure.update_comms()
             self.trigger.update_comms()
             self.display.update_comms()
-
         except:
             print("error")
-        return
 
     def reset(self):
+        """
+        Placeholder docstring description
+        """
         self.instrumentcomms.write("reset()")
 
     def instrument_id_query(self):
+        """
+        Placeholder docsting description.
+        """
         return self.instrumentcomms.query("*IDN?")
 
     def close(self):
+        """
+        Placeholder docstring description.
+        """
         self.instrumentcomms.close()
         return
 
     def available(self, functionality):
         """
-        This function checks for the presence of specific instrument functionality.
+        This function checks for the presence of specific instrument \
+            functionality.
 
         :param functionality:
         :return:
         """
         self.instrumentcomms.write(f"presence = available({functionality})")
 
-    def beep(self, frequency, duration):
+    def beep(self, duration, frequency):
         """
         This function generates an audible tone.
 
@@ -96,12 +108,13 @@ class KeithleySeries2400InteractiveSmu:
         :param duration:
         :return:
         """
-        self.instrumentcomms.write(f"beeper.beep({frequency},{duration})")
+        self.instrumentcomms.write(f"beeper.beep({duration},{frequency})")
 
     @property
     def terminals(self):
         """
-        This attribute describes which set of input and output terminals the instrument is using
+        This attribute describes which set of input and output terminals the \
+            instrument is using
 
         :return: Either 0 (TERMINALS_FRONT) or 1 (TERMINALS_REAR)
         """
@@ -116,7 +129,8 @@ class KeithleySeries2400InteractiveSmu:
     @terminals.setter
     def terminals(self, terminals):
         """
-        This attribute describes which set of input and output terminals the instrument is using
+        This attribute describes which set of input and output terminals the \
+            instrument is using
 
         :param terminals: Either 0 (TERMINALS_FRONT) or 1 (TERMINALS_REAR)
         :return: None
@@ -128,7 +142,8 @@ class KeithleySeries2400InteractiveSmu:
 
     def waitcomplete(self):
         """
-        This function waits for all previously started overlapped commands to complete.
+        This function waits for all previously started overlapped commands to \
+            complete.
 
         :return: None
         """
@@ -136,20 +151,36 @@ class KeithleySeries2400InteractiveSmu:
 
     def get_buffer_reading_count(self, buffer_name="defbuffer1"):
         """
-        This function returns the number of readings presently stored in the specified reading buffer. If no reading
+        This function returns the number of readings presently stored in the \
+            specified reading buffer. If no reading
         buffer is specified, the default is defbuffer1.
 
-        :param buffer_name: The reading buffer whose reading count will be returned.
+        :param buffer_name: The reading buffer whose reading count will be \
+            returned.
         :return:
         """
-        return int(self.instrumentcomms.query(f"print({buffer_name}.n)").rstrip())
+        return int(self.instrumentcomms.query(f"print({buffer_name}.n)").
+                   rstrip())
 
-    def get_buffer_value(self, buffer_name, index, readings=False, relativetimestamps=False, formattedreadings=False,
-                         fractionalseconds=False, extravalues=False, extravalueunits=False, extraformattedvalues=False,
-                         dates=False, seconds=False, sourceformattedvalues=False, sourcestatuses=False,
-                         sourceunits=False, statuses=False, times=False, timestamps=False, units=False):
+    def get_buffer_value(self, buffer_name, index,
+                         readings=False,
+                         relativetimestamps=False,
+                         formattedreadings=False,
+                         fractionalseconds=False,
+                         extravalues=False,
+                         extravalueunits=False,
+                         extraformattedvalues=False,
+                         dates=False, seconds=False,
+                         sourceformattedvalues=False,
+                         sourcestatuses=False,
+                         sourceunits=False,
+                         statuses=False,
+                         times=False,
+                         timestamps=False,
+                         units=False):
         """
-        This function is used to return any one of the table values as part of an instrument buffer at the specified index position.
+        This function is used to return any one of the table values as part of\
+            an instrument buffer at the specified index position.
 
         :param buffer_name:
         :param index:
