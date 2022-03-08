@@ -785,7 +785,7 @@ class MeasureConfiguration:
         :return: The applied measure range.
         """
         self._mycomms.write("range_value = smu.measure.range")
-        range_value = self._mycomms.query("print(range_value)").rstrip()
+        range_value = float(self._mycomms.query("print(range_value)").rstrip())
         return range_value
 
     @range.setter
@@ -807,9 +807,9 @@ class MeasureConfiguration:
         :return: The last reading of the measurement process
         """
         if buffer_name is None:
-            reading = float(self._mycomms.query(f"print(smu.measure.read())").rstrip())
+            reading = float(self._mycomms.query("print(smu.measure.read())").rstrip())
         else:
-            reading = float(self._mycomms.query(f"print(smu.measure.read(\"{buffer_name}\")").rstrip())
+            reading = float(self._mycomms.query(f"print(smu.measure.read({buffer_name}))").rstrip())
         return reading
 
     def readwithtime(self, buffer_name=None):
