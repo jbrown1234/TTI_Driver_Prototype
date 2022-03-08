@@ -30,17 +30,19 @@
 #
 # *****************************************************************************
 # import time
+from numpy import char
 import KeithleySeries2400InteractiveSmu as KeiSmu
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
 
 smu = KeiSmu.KeithleySeries2400InteractiveSmu()
 
 test_parameters = {
-    'terminals': None
+    'terminals': None,
+    'initial_voc': None
 }
 
 
-def configure_system():  # temporarily removed the do_beeps parameter
+def configure_system(do_beeps):  # temporarily removed the do_beeps parameter
     """
     description
 
@@ -52,14 +54,18 @@ def configure_system():  # temporarily removed the do_beeps parameter
 
     smu.eventlog.clear()
 
+    terminals_str = "FRONT"
     selection = input("Enter the terminals you are using: 'F' for FRONT or 'R'\
-         for REAR: ")
+    for REAR: ")
+
     if "F" in selection.upper():
         smu.terminals = smuconst.TERMINALS_FRONT
         test_parameters['terminals'] = smuconst.TERMINALS_FRONT
+        terminals_str = "FRONT"
     elif "R" in selection.upper():
         smu.terminals = smuconst.TERMINALS_REAR
         test_parameters['terminals'] = smuconst.TERMINALS_REAR
+        terminals_str = "REAR"
     else:
         return -1010, "configure_system aborted by user"
 
@@ -96,11 +102,42 @@ def configure_system():  # temporarily removed the do_beeps parameter
         return -1011, "Unexpected SMU model detected; configure_system aborted"
 
     smu.measure.autorange = smuconst.ON
-    smu.measure.nplc = 5.0
+    smu.measure.nplc = 1.0
+
+    character_input = input(f"Make 4-wire connections to your battery at the\
+        SMU {terminals_str} and then press OK.")
+    if do_beeps:
+        smu.beep(0.08, 2400)
+
+    smu.source.output = smuconst.ON
+
+    smu.buffer.clear("defbuffer2")
+
+    # Measure voltage to set range; using defbuffer2 to collect voc values
+    # Expected autorange to do this automatically, but different range
+    #   boundaries in 2460/61 affect my plans.  Use scrap_reading to set
+    #   the range.
+    scrap_reading = smu.measure.read("defbuffer2")
+    smu.measure.range = scrap_reading
+    smu.source.vlimit.level = 1.05 * smu.measure.range
+
+    test_parameters["initial_voc"] = smu.measure.read()
+
+    smu.source.output = smuconst.OFF
+
+    if test_parameters["initial_voc"] <= 0:
+        return -1012, "Negative or zero Initial Voc detected; configure_system\
+            aborted"
+
+    tempvalue = test_parameters["initial_voc"]
+    print(f"Measured battery voltage = {tempvalue} V")
+    character_input = input("Type C to continue or Q to quit: ")
+    if character_input.upper() is "Q":
+        return -1010, "ConfigSystem aborted by user"
 
     return 0, ""
 
 
 smu.initialize("USB0::0x05E6::0x2460::04312353::INSTR")
-val, ret_str = configure_system()
+val, ret_str = configure_system(True)
 print(f"{val}, {ret_str}")
