@@ -23,6 +23,16 @@ class Buffer:
     def __init__(self):
         self.mycomms = None
 
+    def update_comms(self):
+        """
+        This function is used to ensure lower level consumer classes tied to\
+            the driver are updated to promote instrument communications.
+
+        :return:
+        """
+        # self.input._mycomms = self._mycomms
+        print(0)
+
     def capacity(self, buffername="defbuffer1", buffer_capacity=None):
         """
         This attribute gets or sets the number of readings a buffer can store.\
@@ -69,7 +79,8 @@ class Buffer:
         This attribute contains the dates of readings that are stored in\
         the reading buffer.
         """
-        return self.mycomms.query(f"print({buffername}.dates[{index}])").rstrip()
+        return self.mycomms.query(f"print({buffername}.dates[{index}])").\
+            rstrip()
 
     def delete(self, buffername):
         """This function deletes a user-defined reading buffer."""
