@@ -14,14 +14,12 @@
 
 import pyvisa as visa
 import pyvisa.constants as pyconst
-import time
-from datetime import datetime
-import sys
-import os
-import time
 
 
 class Communications:
+    """
+    Provisional, temporary docstring
+    """
     def __init__(self):
         self.resource_manager = None
         self.instrument_object = None
@@ -35,13 +33,20 @@ class Communications:
             print(f"{visawarning}")
 
     def initialize(self, instrument_resource_string, *args):
+        """
+        Temporary, provisional docstring
+        """
         try:
-            self.instrument_object = self.resource_manager.open_resource(instrument_resource_string)
+            self.instrument_object = self.resource_manager.open_resource(
+                instrument_resource_string)
         except visa.VisaIOError as visaerr:
             print(f"{visaerr}")
         return
 
     def close(self):
+        """
+        Temporary, provisional docstring
+        """
         try:
             self.instrument_object.close()
         except visa.VisaIOError as visaerr:
@@ -49,6 +54,9 @@ class Communications:
         return
 
     def write(self, command):
+        """
+        Temporary, provisional docstring
+        """
         try:
             self.instrument_object.write(command)
         except visa.VisaIOError as visaerr:
@@ -56,6 +64,9 @@ class Communications:
         return
 
     def query(self, command):
+        """
+        Temporary, provisional docstring
+        """
         response = ""
         try:
             response = self.instrument_object.query(command).rstrip()
