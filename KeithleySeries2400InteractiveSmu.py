@@ -14,6 +14,7 @@
 
 
 import CommunicationsInterface as comms
+import KeithleySeries2400InteractiveSmu_BufferConfiguration as buffer_config
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
 import KeithleySeries2400InteractiveSmu_MeasureConfiguration as measure_config
 import KeithleySeries2400InteractiveSmu_SourceConfiguration as source_config
@@ -36,7 +37,7 @@ class KeithleySeries2400InteractiveSmu:
         self.resource_id = ""
         # self.instrument_object = None
         self.instrumentcomms = comms.Communications()
-        # self.buffer = self.Buffer()
+        self.buffer = buffer_config.Buffer()
         self.display = display_config.DisplayConfiguration()
         self.eventlog = eventlog_config.EventLogConfiguration()
         self.localnode = localnode_config.LocalNodeConfiguration()
@@ -57,7 +58,7 @@ class KeithleySeries2400InteractiveSmu:
         """
         try:
             self.instrumentcomms.initialize(instrument_resource_string, *args)
-            # self.buffer.mycomms = self.instrumentcomms
+            self.buffer.mycomms = self.instrumentcomms
             self.display._mycomms = self.instrumentcomms
             self.eventlog._mycomms = self.instrumentcomms
             self.localnode._mycomms = self.instrumentcomms
