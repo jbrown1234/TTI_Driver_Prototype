@@ -25,8 +25,8 @@ class DisplayConfiguration:
 
     def update_comms(self):
         """
-        This function is used to ensure lower level consumer classes tied to the driver are updated to promote \
-        instrument communications.
+        This function is used to ensure lower level consumer classes tied to\
+            the driver are updated to promote instrument communications.
 
         :return:
         """
