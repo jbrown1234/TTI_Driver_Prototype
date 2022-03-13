@@ -179,9 +179,9 @@ class Buffer:
         be a default buffer (defbuffer1 or defbuffer2) or a user-defined buffer
         :param filename: (string) A string that indicates the name of the file
         on the USB flash drive in which to save the reading buffer
-        :param timeformat: (constant) Defines how date and time information from
-        the buffer is saved in the file on the USB flash drive; the options
-        are:
+        :param timeformat: (constant) Defines how date and time information
+        from the buffer is saved in the file on the USB flash drive; the
+        options are:
            * BUFFER_SAVE_FORMAT_TIME to save dates, times, and fractional
              seconds
            * BUFFER_SAVE_RELATIVE_TIME to save relative timestamps
@@ -221,9 +221,9 @@ class Buffer:
         be a default buffer (defbuffer1 or defbuffer2) or a user-defined buffer
         :param filename: (string) A string that indicates the name of the file
         on the USB flash drive in which to save the reading buffer
-        :param timeformat: (constant) Defines how date and time information from
-        the buffer is saved in the file on the USB flash drive; the options
-        are:
+        :param timeformat: (constant) Defines how date and time information
+        from the buffer is saved in the file on the USB flash drive; the
+        options are:
            * BUFFER_SAVE_FORMAT_TIME to save dates, times, and fractional
              seconds
            * BUFFER_SAVE_RELATIVE_TIME to save relative timestamps
