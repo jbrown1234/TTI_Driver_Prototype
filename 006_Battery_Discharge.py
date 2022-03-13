@@ -44,7 +44,12 @@ test_parameters = {
     'comment': None,
     'discharge_type': None,
     'discharge_current': 0.0,
-    'discharge_current_list': [],
+    'discharge_current_list': {
+        'current': [],
+        'duration': [],
+        'average_current': None,
+        'list_duration': None,
+    },
     'max_discharge_current': None,
 }
 
@@ -198,8 +203,65 @@ def configure_test(do_beeps):
         dialog_text = f"Discharge Curr (1E-6 to {maximum_allowed_current})"
         test_curr = float(input(f"{dialog_text}: "))
         test_parameters["discharge_current"] = test_curr
+        test_parameters["max_discharge_current"] = \
+            test_parameters["discharge_current"]
     elif "LIST" in discharge_type.upper():
         test_parameters["discharge_type"] = "LIST"
+
+        # create the list type for holding the user-supplied list points
+        test_parameters["discharge_current_list"]["current"].clear()
+        test_parameters["discharge_current_list"]["duration"].clear()
+
+        # set the type to None since it will not be used
+        test_parameters["discharge_current"] = None
+        number_of_list_points = int(input("Enter the number of points in list \
+            (2 to 10): "))
+        if number_of_list_points is None or number_of_list_points < 2 or \
+           number_of_list_points > 10:
+            return -1020, "configure_test aborted by user"
+
+        average_current = 0.0
+        list_duration = 0.0
+
+        for i in range(number_of_list_points):
+            user_input_string = input(f"Discharge current #{i+1} (from 0 \
+            to {maximum_allowed_current}): ")
+
+            if user_input_string is None or user_input_string == "":
+                return -1020, "ConfigTest aborted by user"
+            test_parameters["discharge_current_list"]["current"].append(float(
+                user_input_string))
+
+            user_input_string = input(f"Duration for current#{i+1} (500 us \
+            miniumum): ")
+
+            if user_input_string is None or user_input_string == "":
+                return -1020, "ConfigTest aborted by user"
+            test_parameters["discharge_current_list"]["duration"].append(float(
+                user_input_string))
+
+            average_current = average_current + test_parameters[
+                "discharge_current_list"]["current"][i] * test_parameters[
+                    "discharge_current_list"]["duration"][i]
+            list_duration = list_duration + test_parameters[
+                "discharge_current_list"]["duration"][i]
+
+        average_current = average_current/list_duration
+        test_parameters["discharge_current_list"]["average_current"] = \
+            average_current
+        test_parameters["discharge_current_list"]["list_duration"] = \
+            list_duration
+
+        # Iterate over the current entries in the list to determine the max
+        max_specified_current = test_parameters["discharge_current_list"][
+            "current"][0]
+        for i in range(1, number_of_list_points):
+            if test_parameters["discharge_current_list"]["current"][i] > \
+               max_specified_current:
+                max_specified_current = test_parameters[
+                    "discharge_current_list"]["current"][i]
+
+    return 0, "We cool"
 
 
 smu.initialize("USB0::0x05E6::0x2460::04312353::INSTR")
