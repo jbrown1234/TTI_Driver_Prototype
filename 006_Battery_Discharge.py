@@ -260,7 +260,7 @@ def configure_test(do_beeps):
                max_specified_current:
                 max_specified_current = test_parameters[
                     "discharge_current_list"]["current"][i]
-
+    
     return 0, "We cool"
 
 
