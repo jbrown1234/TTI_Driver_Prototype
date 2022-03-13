@@ -30,7 +30,9 @@
 #
 # *****************************************************************************
 # import time
-from numpy import char
+# from numpy import char
+# from urllib.parse import MAX_CACHE_SIZE
+
 import KeithleySeries2400InteractiveSmu as KeiSmu
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
 
@@ -38,7 +40,12 @@ smu = KeiSmu.KeithleySeries2400InteractiveSmu()
 
 test_parameters = {
     'terminals': None,
-    'initial_voc': None
+    'initial_voc': None,
+    'comment': None,
+    'discharge_type': None,
+    'discharge_current': 0.0,
+    'discharge_current_list': [],
+    'max_discharge_current': None,
 }
 
 
@@ -138,6 +145,64 @@ def configure_system(do_beeps):  # temporarily removed the do_beeps parameter
     return 0, ""
 
 
+def configure_test(do_beeps):
+    """
+    Docstring placeholder
+    """
+    smu.eventlog.clear()
+
+    maximum_allowed_current = 0
+
+    if "2540" in smu.localnode.model():
+        if smu.measure.range == 200:  # volts
+            maximum_allowed_current = 0.105  # amps
+        else:
+            maximum_allowed_current = 1.05  # amps
+    elif "2460" in smu.localnode.model():
+        if smu.measure.range == 100:    # volts
+            maximum_allowed_current = 1.05  # amps
+        elif smu.measure.range == 20:   # volts
+            maximum_allowed_current = 4.2  # amps
+        elif smu.measure.range == 10:   # volts
+            maximum_allowed_current = 5.25  # amps
+        else:
+            maximum_allowed_current = 7.35  # amps
+    elif "2461" in smu.localnode.model():
+        if smu.measure.range == 100:    # volts
+            maximum_allowed_current = 1.05  # amps
+        elif smu.measure.range == 20:   # volts
+            maximum_allowed_current = 4.2   # amps
+        elif smu.measure.range == 10:   # volts
+            maximum_allowed_current = 5.25  # amps
+        else:
+            maximum_allowed_current = 7.35  # amps
+    else:
+        return -1021, "Unexpected SMU model detected; ConfigTest aborted"
+
+    if do_beeps:
+        smu.beep(0.08, 2400)
+    comment = input("Enter Comment (64 char max): ")
+    if comment == "" or comment is None:
+        comment = "NO COMMENT"
+    test_parameters["comment"] = comment
+
+    if do_beeps:
+        smu.beep(0.08, 2400)
+
+    discharge_type = input("For constant current discharge enter \"CURR\", \
+        for pulsed or list current enter \"LIST\": ")
+
+    if "CURR" in discharge_type.upper():
+        test_parameters["discharge_type"] = "CONSTANT"
+
+        dialog_text = f"Discharge Curr (1E-6 to {maximum_allowed_current})"
+        test_curr = float(input(f"{dialog_text}: "))
+        test_parameters["discharge_current"] = test_curr
+    elif "LIST" in discharge_type.upper():
+        test_parameters["discharge_type"] = "LIST"
+
+
 smu.initialize("USB0::0x05E6::0x2460::04312353::INSTR")
 val, ret_str = configure_system(True)
+val, ret_str = configure_test(True)
 print(f"{val}, {ret_str}")
