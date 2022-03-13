@@ -174,23 +174,92 @@ class Buffer:
         """
         This function saves data from the specified reading buffer to a USB\
             flash drive.
+
+        :param buffername: (string) The name of the reading buffer, which may
+        be a default buffer (defbuffer1 or defbuffer2) or a user-defined buffer
+        :param filename: (string) A string that indicates the name of the file
+        on the USB flash drive in which to save the reading buffer
+        :param timeformat: (constant) Defines how date and time information from
+        the buffer is saved in the file on the USB flash drive; the options
+        are:
+           * BUFFER_SAVE_FORMAT_TIME to save dates, times, and fractional
+             seconds
+           * BUFFER_SAVE_RELATIVE_TIME to save relative timestamps
+           * BUFFER_SAVE_RAW_TIME to save seconds and fractional seconds
+           * BUFFER_SAVE_TIMESTAMP_TIME save timestamps
+        :param start: (int) Defines the starting point in the buffer to
+        start saving data
+        :param end: (int) Defines the ending point in the buffer to stop
+        saving data
+        :return:
         """
-        for k in kwargs:
+        cmd_str = f"buffer.save({buffername},\"{filename}\""
+        for k, v in kwargs.items():
             if k == 'timeformat':
-                print("")
-        f"buffer.save({buffername},\"{filename}\")"
-        f"buffer.save({buffername},\"{filename}\",timeformat)"
-        f"buffer.save({buffername},\"{filename}\",timeformat,start,end)"
+                if v == _smuconst.BUFFER_SAVE_FORMAT_TIME:
+                    cmd_str += ",buffer.SAVE_FORMAT_TIME"
+                elif v == _smuconst.BUFFER_SAVE_RAW_TIME:
+                    cmd_str += ",buffer.SAVE_RAW_TIME"
+                elif v == _smuconst.BUFFER_SAVE_RELATIVE_TIME:
+                    cmd_str += ",buffer.SAVE_RELATIVE_TIME"
+                elif v == _smuconst.BUFFER_SAVE_TIMESTAMP_TIME:
+                    cmd_str += ",buffer.SAVE_TIMESTAMP_TIME"
+            if k == 'start':
+                cmd_str += f",{v}"
+            if k == 'end':
+                cmd_str += f",{v}"
+
+        cmd_str += ")"
+        self.mycomms.write(cmd_str)
 
     def saveappend(self, buffername, filename, **kwargs):
-        """This function saves data from the specified reading buffer to a USB flash drive."""
-        for k in kwargs:
-            if k == 'timeformat':
-                print("")
-        f"buffer.saveappend({buffername},\"{filename}\")"
-        f"buffer.saveappend({buffername},\"{filename}\",timeformat)"
-        f"buffer.saveappend({buffername},\"{filename}\",timeformat,start,end)"
+        """
+        This function saves data from the specified reading buffer to a USB
+        flash drive.
 
-    # def unit(self):
-    #    """This function allows you to create up to three custom units of measure for use in buffers."""
-    #    f"buffer.unit(buffer.UNIT_CUSTOMN, unitOfMeasure)"
+        :param buffername: (string) The name of the reading buffer, which may
+        be a default buffer (defbuffer1 or defbuffer2) or a user-defined buffer
+        :param filename: (string) A string that indicates the name of the file
+        on the USB flash drive in which to save the reading buffer
+        :param timeformat: (constant) Defines how date and time information from
+        the buffer is saved in the file on the USB flash drive; the options
+        are:
+           * BUFFER_SAVE_FORMAT_TIME to save dates, times, and fractional
+             seconds
+           * BUFFER_SAVE_RELATIVE_TIME to save relative timestamps
+           * BUFFER_SAVE_RAW_TIME to save seconds and fractional seconds
+           * BUFFER_SAVE_TIMESTAMP_TIME save timestamps
+        :param start: (int) Defines the starting point in the buffer to
+        start saving data
+        :param end: (int) Defines the ending point in the buffer to stop
+        saving data
+        :return:
+        """
+        cmd_str = f"buffer.saveappend({buffername},\"{filename}\""
+        for k, v in kwargs.items():
+            if k == 'timeformat':
+                if v == _smuconst.BUFFER_SAVE_FORMAT_TIME:
+                    cmd_str += ",buffer.SAVE_FORMAT_TIME"
+                elif v == _smuconst.BUFFER_SAVE_RAW_TIME:
+                    cmd_str += ",buffer.SAVE_RAW_TIME"
+                elif v == _smuconst.BUFFER_SAVE_RELATIVE_TIME:
+                    cmd_str += ",buffer.SAVE_RELATIVE_TIME"
+                elif v == _smuconst.BUFFER_SAVE_TIMESTAMP_TIME:
+                    cmd_str += ",buffer.SAVE_TIMESTAMP_TIME"
+            if k == 'start':
+                cmd_str += f",{v}"
+            if k == 'end':
+                cmd_str += f",{v}"
+
+        cmd_str += ")"
+        self.mycomms.write(cmd_str)
+
+    def unit(self):
+        """
+        This function allows you to create up to three custom units of measure
+        for use in buffers.
+
+        param: first - (None)
+        param: second = (None)
+        """
+        print(0)
