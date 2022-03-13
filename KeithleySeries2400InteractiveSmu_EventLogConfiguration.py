@@ -25,8 +25,8 @@ class EventLogConfiguration:
 
     def update_comms(self):
         """
-        This function is used to ensure lower level consumer classes tied to the driver are updated to promote \
-        instrument communications.
+        This function is used to ensure lower level consumer classes tied to\
+            the driver are updated to promote instrument communications.
 
         :return:
         """
@@ -41,9 +41,13 @@ class EventLogConfiguration:
         self._mycomms.write("eventlog.clear()")
 
     def getcount(self, event_type=None):
+        """
+        Temporary provisional docstring
+        """
         event_count = 0
         if event_type is None:
-            event_count = int(self._mycomms.query("print(eventlog.getcount())").rstrip())
+            event_count = int(self._mycomms.query("print(eventlog.getcount())\
+                ").rstrip())
         else:
             const_string = ""
             if event_type is _smuconst.EVENTLOG_SEV_ERROR:
@@ -60,5 +64,6 @@ class EventLogConfiguration:
                 const_string = "eventlog.SEV_INFO|eventlog.SEV_WARN"
             elif event_type is _smuconst.EVENTLOG_SEV_ALL:
                 const_string = "eventlog.SEV_ALL"
-            event_count = int(self._mycomms.query(f"print(eventlog.getcount({const_string}))").rstrip())
+            event_count = int(self._mycomms.query(f"print(eventlog.getcount\
+                ({const_string}))").rstrip())
         return event_count
