@@ -17,15 +17,18 @@
 #
 # Example Description:
 #
-#       The following sequence of commands performs a capacitor leakage measurement by sourcing 20 V and
-#       measuring the resulting leakage current. The DurationLoop trigger model template applies the voltage
-#       for 30 seconds and makes measurements at 200 ms intervals. After the duration time, the capacitor is
+#       The following sequence of commands performs a capacitor leakage
+#       measurement by sourcing 20 V and measuring the resulting leakage
+#       current. The DurationLoop trigger model template applies the voltage
+#       for 30 seconds and makes measurements at 200 ms intervals. After
+#       the duration time, the capacitor is
 #       discharged at 0 V and the output is turned off
 #
 # ********************************************************************************
+import time
 import KeithleySeries2400InteractiveSmu as KeiSmu
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
-import time
+
 
 mysmu = KeiSmu.KeithleySeries2400InteractiveSmu()
 
@@ -65,7 +68,23 @@ mysmu.source.output = smuconst.OFF
 print("Reading #\tResistance\tTime")
 for i in range(1, mysmu.get_buffer_reading_count()+1, 1):
     reading_val = mysmu.get_buffer_value("defbuffer1", i, readings=True)
-    reltime_val = mysmu.get_buffer_value("defbuffer1", i, relativetimestamps=True)
+    reltime_val = mysmu.get_buffer_value("defbuffer1",
+                                         i,
+                                         relativetimestamps=True)
     print(f"{i}\t{reltime_val}\t{reading_val}")
+
+# Optionally write the data from the buffer to a USB drive 
+mysmu.buffer.save("defbuffer1",
+                  "/usb1/myData",
+                  timeformat=smuconst.BUFFER_SAVE_RELATIVE_TIME,
+                  start=1,
+                  end=mysmu.get_buffer_reading_count())
+
+# Optionally append the data from the buffer to an existing file on
+# a USB drive
+mysmu.buffer.saveappend("defbuffer1", "/usb1/myData",
+                        timeformat=smuconst.BUFFER_SAVE_FORMAT_TIME,
+                        start=1,
+                        end=mysmu.get_buffer_reading_count())
 
 mysmu.close()
