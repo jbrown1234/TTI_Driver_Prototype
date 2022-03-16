@@ -73,7 +73,7 @@ for i in range(1, mysmu.get_buffer_reading_count()+1, 1):
                                          relativetimestamps=True)
     print(f"{i}\t{reltime_val}\t{reading_val}")
 
-# Optionally write the data from the buffer to a USB drive 
+# Optionally write the data from the buffer to a USB drive
 mysmu.buffer.save("defbuffer1",
                   "/usb1/myData",
                   timeformat=smuconst.BUFFER_SAVE_RELATIVE_TIME,
