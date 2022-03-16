@@ -106,13 +106,22 @@ class KeithleySeries2400InteractiveSmu:
 
     def beep(self, duration, frequency):
         """
-        This function generates an audible tone.
+        This method generates an audible tone.
 
         :param frequency:
         :param duration:
         :return:
         """
         self.instrumentcomms.write(f"beeper.beep({duration},{frequency})")
+
+    def delay(self, seconds):
+        """
+        This function delays the execution of the commands that follow it.
+
+        :param seconds: (float) The number of seconds to delay (0 to 100 ks)
+        :return: None
+        """
+        self.instrumentcomms.write(f"delay({seconds})")
 
     @property
     def terminals(self):
