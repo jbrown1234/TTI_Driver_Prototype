@@ -12,7 +12,7 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
-import KeithleySeries2400InteractiveSmu_Constants as _smuconst
+# import KeithleySeries2400InteractiveSmu_Constants as _smuconst
 
 
 class DataQueueConfiguration:
@@ -25,7 +25,7 @@ class DataQueueConfiguration:
 
     def update_comms(self):
         """
-        This function is used to ensure lower level consumer classes tied to\
+        This method is used to ensure lower level consumer classes tied to\
             the driver are updated to promote instrument communications.
 
         :return:
@@ -35,10 +35,65 @@ class DataQueueConfiguration:
 
     def add(self, value, timeout=None):
         """
-        This function adds an entry to the data queue.
+        This method adds an entry to the data queue.
 
-        :param value: (int)
-        :param timeout: (float)
-        :return
+        :param value: (number) The data item to add; value can be of any type
+        :param timeout: (int) The maximum number of seconds to wait for space
+        in the data queue
+        :return result: (bool) The resulting value of True or False based on
+        the success of the method
         """
-        print(0)
+        if timeout is None:
+            self._mycomms.write(f"result = dataqueue.add({value})")
+        else:
+            self._mycomms.write(f"result = dataqueue.add({value}, {timeout})")
+        result = self._mycomms.query("print(result)")
+        if "true" in result.lower():
+            bool_return = True
+        elif "false" in result.loweer():
+            bool_return = False
+        return bool_return
+
+    def capacity(self):
+        """
+        This constant is the maximum number of entries that you can store in
+        the data queue.
+
+        :return count: The variable that is assigned the value of
+        dataqueue.CAPACITY
+        """
+        self._mycomms.write("count = dataqueue.CAPACITY")
+        _count = int(self._mycomms.query("print(count)"))
+        return _count
+
+    def clear(self):
+        """
+        This method clears the data queue.
+
+        :return: None
+        """
+        self._mycomms.write("count = dataqueue.clear()")
+
+    def count(self):
+        """
+        This attribute contains the number of items in the data queue.
+
+        :return: count
+        """
+        self._mycomms.write("count = dataqueue.count")
+        _count = int(self._mycomms.query("print(count)"))
+        return _count
+
+    def next(self, timeout=None):
+        """
+        This method removes the next entry from the data queue.
+
+        :param timeout: The number of seconds to wait for data in the queue
+        :return value: The next entry in the data queue
+        """
+        if timeout is None:
+            self._mycomms.write("value = dataqueue.next()")
+        else:
+            self._mycomms.write("value = dataqueue.next(timeout)")
+        value = float(self._mycomms.query("print(value)"))
+        return value 
