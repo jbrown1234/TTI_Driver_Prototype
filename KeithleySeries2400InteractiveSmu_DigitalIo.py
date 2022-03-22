@@ -114,12 +114,12 @@ class DigitalIoConfiguration:
         def state(self, io_line, state=None):
             """
             This function resets digital I/O line values to their factory
-            defaults. 
+            defaults.
 
             :param io_line: (int) The digital I/O line: 1 to 6
             :param state: Either DIGIO_STATE_LOW (0) or DIGIO_STATE_HIGH (1).\
                 If no argument is passed, the default state remains None and\
-                    the method acts to return the active state. 
+                    the method acts to return the active state.
             :return
             """
             if state is None:
