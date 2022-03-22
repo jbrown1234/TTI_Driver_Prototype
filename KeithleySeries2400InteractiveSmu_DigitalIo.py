@@ -46,37 +46,42 @@ class DigitalIoConfiguration:
             to be input, output, or open-drain.
 
             :param io_line: (int) The digital I/O line: 1 to 6
-            :param mode: The digital line control type and line mode:
-                                    * Digital control, input: DIGIO_MODE_DIGITAL_IN
-                                    * Digital control, output: DIGIO_MODE_DIGITAL_OUT
-                                    * Digital control, open-drain: DIGIO_MODE_DIGITAL_OPEN_DRAIN
-                                    * Trigger control, input: DIGIO_MODE_TRIGGER_IN
-                                    * Trigger control, output: DIGIO_MODE_TRIGGER_OUT
-                                    * Trigger control, open-drain: DIGIO_MODE_TRIGGER_OPEN_DRAIN
-                                    * Synchronous master: DIGIO_MODE_SYNCHRONOUS_MASTER
-                                    * Synchronous acceptor: DIGIO_MODE_SYNCHRONOUS_ACCEPTOR
-            :return: 
+            :param mode: The digital line control type and line mode -
+                DIGIO_MODE_DIGITAL_IN,  DIGIO_MODE_DIGITAL_OUT,
+                DIGIO_MODE_DIGITAL_OPEN_DRAIN,  DIGIO_MODE_TRIGGER_IN,
+                DIGIO_MODE_TRIGGER_OUT, DIGIO_MODE_TRIGGER_OPEN_DRAIN,
+                DIGIO_MODE_SYNCHRONOUS_MASTER,  DIGIO_MODE_SYNCHRONOUS_ACCEPTOR
+            :return: line_mode
             """
             if line_mode is not None:
                 if line_mode is _smuconst.DIGIO_MODE_DIGITAL_IN:
-                    self._mycomms.write(f"digio.line[{io_line}].mode = digio.MODE_DIGITAL_IN")
+                    self._mycomms.write(f"digio.line[{io_line}].mode =\
+                        digio.MODE_DIGITAL_IN")
                 elif line_mode is _smuconst.DIGIO_MODE_DIGITAL_OUT:
-                    self._mycomms.write(f"digio.line[{io_line}].mode = digio.MODE_DIGITAL_OUT")
+                    self._mycomms.write(f"digio.line[{io_line}].mode =\
+                        digio.MODE_DIGITAL_OUT")
                 elif line_mode is _smuconst.DIGIO_MODE_DIGITAL_OPEN_DRAIN:
-                    self._mycomms.write(f"digio.line[{io_line}].mode = digio.MODE_DIGITAL_OPEN_DRAIN")
+                    self._mycomms.write(f"digio.line[{io_line}].mode =\
+                        digio.MODE_DIGITAL_OPEN_DRAIN")
                 elif line_mode is _smuconst.DIGIO_MODE_TRIGGER_IN:
-                    self._mycomms.write(f"digio.line[{io_line}].mode = digio.MODE_TRIGGER_IN")
+                    self._mycomms.write(f"digio.line[{io_line}].mode =\
+                        digio.MODE_TRIGGER_IN")
                 elif line_mode is _smuconst.DIGIO_MODE_TRIGGER_OUT:
-                    self._mycomms.write(f"digio.line[{io_line}].mode = digio.MODE_TRIGGER_OUT")
+                    self._mycomms.write(f"digio.line[{io_line}].mode =\
+                        digio.MODE_TRIGGER_OUT")
                 elif line_mode is _smuconst.DIGIO_MODE_TRIGGER_OPEN_DRAIN:
-                    self._mycomms.write(f"digio.line[{io_line}].mode = digio.MODE_TRIGGER_OPEN_DRAIN")
+                    self._mycomms.write(f"digio.line[{io_line}].mode =\
+                        digio.MODE_TRIGGER_OPEN_DRAIN")
                 elif line_mode is _smuconst.DIGIO_MODE_SYNCHRONOUS_MASTER:
-                    self._mycomms.write(f"digio.line[{io_line}].mode = digio.MODE_SYNCHRONOUS_MASTER")
+                    self._mycomms.write(f"digio.line[{io_line}].mode =\
+                        digio.MODE_SYNCHRONOUS_MASTER")
                 elif line_mode is _smuconst.DIGIO_MODE_SYNCHRONOUS_ACCEPTOR:
-                    self._mycomms.write(f"digio.line[{io_line}].mode = digio.MODE_SYNCHRONOUS_ACCEPTOR")
+                    self._mycomms.write(f"digio.line[{io_line}].mode =\
+                        digio.MODE_SYNCHRONOUS_ACCEPTOR")
                 return None
             else:
-                line_mode = self._mycomms.query(f"line_mode = digio.line[{io_line}].mode")
+                line_mode = self._mycomms.query(f"line_mode =\
+                    digio.line[{io_line}].mode")
                 return_val = None
                 if "DIGITAL_IN" in line_mode:
                     return_val = _smuconst.DIGIO_MODE_DIGITAL_IN
@@ -96,7 +101,7 @@ class DigitalIoConfiguration:
                     return_val = _smuconst.DIGIO_MODE_SYNCHRONOUS_ACCEPTOR
                 return return_val
 
-        def reset(self):
+        def reset(self, io_line):
             """
             This function resets digital I/O line values to their factory
             defaults.
@@ -104,4 +109,50 @@ class DigitalIoConfiguration:
             :param io_line: (int) The digital I/O line: 1 to 6
             :return
             """
-            print(0)
+            self._mycomms.write(f"digio.line[{io_line}].reset()")
+
+        def state(self, io_line, state=None):
+            """
+            This function resets digital I/O line values to their factory
+            defaults. 
+
+            :param io_line: (int) The digital I/O line: 1 to 6
+            :param state: Either DIGIO_STATE_LOW (0) or DIGIO_STATE_HIGH (1).\
+                If no argument is passed, the default state remains None and\
+                    the method acts to return the active state. 
+            :return
+            """
+            if state is None:
+                self._mycomms.write(f"state = digio.line[{io_line}].state")
+                state_str = self._mycomms.query("print(state)")
+                if "STATE_LOW" in state_str:
+                    return _smuconst.DIGIO_STATE_LOW
+                elif "STATE_HIGH" in state_str:
+                    return _smuconst.DIGIO_STATE_HIGH
+            else:
+                if state is _smuconst.DIGIO_STATE_LOW:
+                    self._mycomms.write(f"digio.line[{io_line}].state =\
+                        digio.STATE_LOW")
+                if state is _smuconst.DIGIO_STATE_HIGH:
+                    self._mycomms.write(f"digio.line[{io_line}].state =\
+                        digio.STATE_HIGH")
+                return None
+
+    def readport(self):
+        """
+        This function reads the digital I/O port.
+
+        :return: (int) value
+        """
+        self._mycomms.write("data = digio.readport()")
+        value = int(self._mycomms.query("print(data)"))
+        return value
+
+    def writeport(self, data):
+        """
+        This function writes to all digital I/O lines.
+
+        :param data: (int) The value to write to the port (0 to 63)
+        :return: (int) value
+        """
+        self._mycomms.write(f"digio.writeport({data})")
