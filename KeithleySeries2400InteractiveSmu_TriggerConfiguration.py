@@ -40,6 +40,7 @@ class TriggerConfiguration:
         """
         def __init__(self):
             self._mycomms = None
+            self.setblock = self.Setblock()
 
         def initiate(self):
             """
@@ -98,6 +99,181 @@ class TriggerConfiguration:
             else:
                 self._mycomms.write(f"trigger.model.load(\"SimpleLoop\",\
                     {count})")
+
+        class Setblock():
+            """
+            Placeholder docstring description
+            """
+            def __init__(self):
+                self._mycomms = None
+                self.branch = self.Branch()
+                self.configure = self.Config()
+
+            class Branch():
+                """
+                Placeholder
+                """
+                def __init__(self):
+                    self._mycomms = None
+                    self.limit = self.Limit()
+
+                def always(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+                def counter(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+                def delta(self):
+                    """
+                    Placeholder
+                    """
+
+                class Limit():
+                    """
+                    Placeholder
+                    """
+                    def __init__(self):
+                        self._mycomms = None
+
+                    def constant(self):
+                        """
+                        Placeholder
+                        """
+                        print(0)
+
+                    def dynamic(self):
+                        """
+                        Placeholder
+                        """
+                        print(0)
+
+                def on_event(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+                def once(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+                def once_excluded(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+            def buffer_clear(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            class Config():
+                """
+                Placeholder
+                """
+                def __init__(self):
+                    self._mycomms = None
+
+                def next(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+                def previous(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+                def recall(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+            class Delay():
+                """
+                Placeholder
+                """
+                def __init__(self):
+                    self._mycomms = None
+
+                def constant(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+                def dynamic(self):
+                    """
+                    Placeholder
+                    """
+                    print(0)
+
+            def digital_io(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            def digitize(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            def log_event(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            def measure(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            def nop(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            def notify(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            def reset_branch_count(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            def source_output(self):
+                """
+                Placeholder
+                """
+                print(0)
+
+            def wait(self):
+                """
+                Placeholder
+                """
+                print(0)
 
         @property
         def state(self):
