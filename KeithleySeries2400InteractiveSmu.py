@@ -16,7 +16,8 @@
 import CommunicationsInterface as comms
 import KeithleySeries2400InteractiveSmu_BufferConfiguration as buffer_config
 import KeithleySeries2400InteractiveSmu_Constants as smuconst
-import KeithleySeries2400InteractiveSmu_DataQueueConfiguration as dataqueue_config
+import KeithleySeries2400InteractiveSmu_DataQueueConfiguration as \
+    dataqueue_config
 import KeithleySeries2400InteractiveSmu_MeasureConfiguration as measure_config
 import KeithleySeries2400InteractiveSmu_SourceConfiguration as source_config
 import KeithleySeries2400InteractiveSmu_TriggerConfiguration as trigger_config
@@ -77,7 +78,8 @@ class KeithleySeries2400InteractiveSmu:
 
     def reset(self):
         """
-        Placeholder docstring description
+        This function resets commands to their default settings and clears the buffers.
+        :return: None
         """
         self.instrumentcomms.write("reset()")
 
