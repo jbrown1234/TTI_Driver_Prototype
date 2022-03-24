@@ -113,7 +113,7 @@ class MeasureConfiguration:
         """
         lowrange = None
         self._mycomms.write("lowRange = smu.measure.autorangelow")
-        highrange = float(self._mycomms.query("print(lowRange)").rstrip())
+        lowrange = float(self._mycomms.query("print(lowRange)").rstrip())
         return lowrange
 
     @autorangelow.setter
@@ -127,7 +127,7 @@ class MeasureConfiguration:
         instrument range
         :return:
         """
-        self._mycomms.write(f"smu.measure.autorangehigh={range_value}")
+        self._mycomms.write(f"smu.measure.autorangelow={range_value}")
 
     @property
     def autorangerebound(self):
