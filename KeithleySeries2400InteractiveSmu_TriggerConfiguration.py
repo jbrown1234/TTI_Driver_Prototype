@@ -31,6 +31,7 @@ class TriggerConfiguration:
         :return:
         """
         self.model._mycomms = self._mycomms
+        self.model._update_comms()
         # self.configlist.mycomms = self.mycomms
         # self.filter.mycomms = self.mycomms
 
@@ -41,6 +42,13 @@ class TriggerConfiguration:
         def __init__(self):
             self._mycomms = None
             self.setblock = self.Setblock()
+
+        def _update_comms(self):
+            """
+            Placeholder
+            """
+            self.setblock._mycomms = self._mycomms
+            self.setblock._update_comms()
 
         def initiate(self):
             """
@@ -109,6 +117,12 @@ class TriggerConfiguration:
                 self.branch = self.Branch()
                 self.configure = self.Config()
 
+            def _update_comms(self):
+                self.branch._mycomms = self._mycomms
+                self.configure._mycomms = self._mycomms
+
+                self.branch._update_comms()
+
             class Branch():
                 """
                 Placeholder
@@ -117,22 +131,67 @@ class TriggerConfiguration:
                     self._mycomms = None
                     self.limit = self.Limit()
 
-                def always(self):
-                    """
-                    Placeholder
-                    """
-                    print(0)
+                def _update_comms(self):
+                    self.limit._mycomms = self._mycomms
 
-                def counter(self):
+                def always(self, block_number, branch_to_block):
                     """
-                    Placeholder
-                    """
-                    print(0)
+                    This function defines a trigger-model block that always\
+                        goes to a specific block.
 
-                def delta(self):
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param branch_to_block: The block number to execute when\
+                        the trigger model reaches the Branch Always block.
+                    :return: None
                     """
-                    Placeholder
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        , trigger.BLOCK_BRANCH_ALWAYS, {branch_to_block})")
+
+                def counter(self, block_number, target_count, branch_to_block):
                     """
+                    This function defines a trigger-model block that branches\
+                        to a specified block a specified number of times.
+
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param target_count: The number of times to repeat.
+                    :param branch_to_block: The block number to execute when\
+                        the trigger model reaches the Branch Always block.
+                    :return: None
+                    """
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        , trigger.BLOCK_BRANCH_COUNTER, {target_count},\
+                            {branch_to_block})")
+
+                def delta(self, block_number, target_difference,
+                          branch_to_block, measure_block=None):
+                    """
+                    This function defines a trigger-model block that branches\
+                        to a specified block a specified number of times.
+
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param target_difference: The value against which the\
+                        block compares the difference between the\
+                            measurements.
+                    :param branch_to_block: The block number to execute when\
+                        the trigger model reaches the Branch Always block.
+                    :param measure_block: The block number of the measure/\
+                        digitize block that makes the measurements to be\
+                            compared; if this is 0 or undefined, the trigger\
+                                model uses the previous measure/digitize block.
+                    :return: None
+                    """
+                    if measure_block is None:
+                        self._mycomms.write(f"trigger.model.setblock(\
+                            {block_number}, trigger.BLOCK_BRANCH_DELTA,\
+                                {target_difference}, {branch_to_block})")
+                    else:
+                        self._mycomms.write(f"trigger.model.setblock(\
+                            {block_number}, trigger.BLOCK_BRANCH_DELTA,\
+                                {target_difference}, {branch_to_block},\
+                                    {measure_block})")
 
                 class Limit():
                     """
@@ -141,11 +200,41 @@ class TriggerConfiguration:
                     def __init__(self):
                         self._mycomms = None
 
-                    def constant(self):
+                    def constant(self, block_number, limit_type, limit_a, 
+                                 limit_b, branch_to_block, measure_block=None):
                         """
-                        Placeholder
+                        This function defines a trigger-model block that goes\
+                            to a specified block if a measurement meets preset\
+                                criteria.
+
+                        :param block_number: The sequence of the block in the\
+                            trigger model.
+                        :param limit_type: The type of limit, which can be one\
+                            of the following types: TRIGGER_LIMIT_ABOVE (0),\
+                                TRIGGER_LIMIT_BELOW (1), TRIGGER_LIMIT_INSIDE\
+                                    (2), TRIGGER_LIMIT_OUTSIDE (3)
+                        :param limit_a: The lower limit that the measurement\
+                            is tested against; if limit_type is set to\
+                                TRIGGER_LIMIT_ABOVE, this value is ignored; if\
+                                    set to TRIGGER_LIMIT_BELOW, the\
+                                        measurement must be below this value;\
+                                            if set to TRIGGER_LIMIT_BELOW, the\
+                                                the measurement must be below\
+                                                    this value
+                        :param limit_b:
+                        :param branch_to_block:
+                        :param measure_block:
+                        :return: None
                         """
-                        print(0)
+                        if measure_block is None:
+                            self._mycomms.write(f"trigger.model.setblock(\
+                                {block_number}, trigger.BLOCK_BRANCH_LIMIT_CONSTANT,\
+                                    {target_difference}, {branch_to_block})")
+                        else:
+                            self._mycomms.write(f"trigger.model.setblock(\
+                                {block_number}, trigger.BLOCK_BRANCH_LIMIT_CONSTANT,\
+                                    {target_difference}, {branch_to_block},\
+                                        {measure_block})")
 
                     def dynamic(self):
                         """
