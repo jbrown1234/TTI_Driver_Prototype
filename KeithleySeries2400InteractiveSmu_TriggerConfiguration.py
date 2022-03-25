@@ -200,7 +200,7 @@ class TriggerConfiguration:
                     def __init__(self):
                         self._mycomms = None
 
-                    def constant(self, block_number, limit_type, limit_a, 
+                    def constant(self, block_number, limit_type, limit_a,
                                  limit_b, branch_to_block, measure_block=None):
                         """
                         This function defines a trigger-model block that goes\
@@ -211,36 +211,100 @@ class TriggerConfiguration:
                             trigger model.
                         :param limit_type: The type of limit, which can be one\
                             of the following types: TRIGGER_LIMIT_ABOVE (0),\
-                                TRIGGER_LIMIT_BELOW (1), TRIGGER_LIMIT_INSIDE\
-                                    (2), TRIGGER_LIMIT_OUTSIDE (3)
+                            TRIGGER_LIMIT_BELOW (1), TRIGGER_LIMIT_INSIDE (2),\
+                            TRIGGER_LIMIT_OUTSIDE (3)
                         :param limit_a: The lower limit that the measurement\
                             is tested against; if limit_type is set to\
-                                TRIGGER_LIMIT_ABOVE, this value is ignored; if\
-                                    set to TRIGGER_LIMIT_BELOW, the\
-                                        measurement must be below this value;\
-                                            if set to TRIGGER_LIMIT_BELOW, the\
-                                                the measurement must be below\
-                                                    this value
-                        :param limit_b:
-                        :param branch_to_block:
-                        :param measure_block:
+                            TRIGGER_LIMIT_ABOVE, this value is ignored; if\
+                            set to TRIGGER_LIMIT_BELOW, the measurement must\
+                            be below this value; if set to\
+                            TRIGGER_LIMIT_INSIDE, the low limit that the\
+                            measurement is compared against; if set to\
+                            TRIGGER_LIMIT_OUTSIDE, the low limit that the\
+                            measurement is compared against
+                        :param limit_b: The upper limit that the measurement\
+                            is tested against; if limit_type is set to\
+                            TRIGGER_LIMIT_ABOVE, the measurement must be\
+                            below; if set to TRIGGER_LIMIT_BELOW, this value\
+                            is ignored;; if set to TRIGGER_LIMIT_INSIDE, the\
+                            high limit that the measurement is compared\
+                            against; if set to TRIGGER_LIMIT_OUTSIDE, the high\
+                            limit that the measurement is compared against
+                        :param branch_to_block: The block number to execute\
+                            when the trigger model reaches the Branch Always \
+                            block.
+                        :param measure_block: The block number of the measure/\
+                            digitize block that makes the measurements to be\
+                            compared; if this is 0 or undefined, the trigger\
+                            model uses the previous measure/digitize block.
                         :return: None
                         """
+                        limit_type_str = ""
+                        if limit_type is _smuconst.TRIGGER_LIMIT_ABOVE:
+                            limit_type_str = "trigger.LIMIT_ABOVE"
+                        elif limit_type is _smuconst.TRIGGER_LIMIT_BELOW:
+                            limit_type_str = "trigger.LIMIT_BELOW"
+                        elif limit_type is _smuconst.TRIGGER_LIMIT_INSIDE:
+                            limit_type_str = "trigger.LIMIT_INSIDE"
+                        elif limit_type is _smuconst.TRIGGER_LIMIT_OUTSIDE:
+                            limit_type_str = "trigger.LIMIT_OUTSIDE"
+
                         if measure_block is None:
                             self._mycomms.write(f"trigger.model.setblock(\
-                                {block_number}, trigger.BLOCK_BRANCH_LIMIT_CONSTANT,\
-                                    {target_difference}, {branch_to_block})")
+                            {block_number},trigger.BLOCK_BRANCH_LIMIT_CONSTANT,\
+                            {limit_type_str},{limit_a},{limit_b},\
+                            {branch_to_block})")
                         else:
                             self._mycomms.write(f"trigger.model.setblock(\
-                                {block_number}, trigger.BLOCK_BRANCH_LIMIT_CONSTANT,\
-                                    {target_difference}, {branch_to_block},\
-                                        {measure_block})")
+                            {block_number},trigger.BLOCK_BRANCH_LIMIT_CONSTANT,\
+                            {limit_type_str},{limit_a},{limit_b},\
+                            {branch_to_block},{measure_block})")
 
-                    def dynamic(self):
+                    def dynamic(self, block_number, limit_type, limit_number,
+                                branch_to_block, measure_block=None):
                         """
-                        Placeholder
+                        This function defines a trigger-model block that goes\
+                            to a specified block if a measurement meets preset\
+                                criteria.
+
+                        :param block_number: The sequence of the block in the\
+                            trigger model.
+                        :param limit_type: The type of limit, which can be one\
+                            of the following types: TRIGGER_LIMIT_ABOVE (0),\
+                            TRIGGER_LIMIT_BELOW (1), TRIGGER_LIMIT_INSIDE (2),\
+                            TRIGGER_LIMIT_OUTSIDE (3)
+                        :param limit_number: The limit number (1 or 2).
+                        :param branch_to_block: The block number to execute\
+                            when the trigger model reaches the Branch Always \
+                            block.
+                        :param measure_block: The block number of the measure/\
+                            digitize block that makes the measurements to be\
+                            compared; if this is 0 or undefined, the trigger\
+                            model uses the previous measure/digitize block.
+                        :return: None
                         """
-                        print(0)
+                        limit_type_str = ""
+                        if limit_type is _smuconst.TRIGGER_LIMIT_ABOVE:
+                            limit_type_str = "trigger.LIMIT_ABOVE"
+                        elif limit_type is _smuconst.TRIGGER_LIMIT_BELOW:
+                            limit_type_str = "trigger.LIMIT_BELOW"
+                        elif limit_type is _smuconst.TRIGGER_LIMIT_INSIDE:
+                            limit_type_str = "trigger.LIMIT_INSIDE"
+                        elif limit_type is _smuconst.TRIGGER_LIMIT_OUTSIDE:
+                            limit_type_str = "trigger.LIMIT_OUTSIDE"
+
+                        if measure_block is None:
+                            self._mycomms.write(f"trigger.model.setblock(\
+                            {block_number},\
+                            trigger.BLOCK_BRANCH_LIMIT_DYNAMIC,\
+                            {limit_type_str},{limit_number},{branch_to_block},\
+                            {measure_block})")
+                        else:
+                            self._mycomms.write(f"trigger.model.setblock(\
+                            {block_number},\
+                            trigger.BLOCK_BRANCH_LIMIT_DYNAMIC,\
+                            {limit_type_str},{limit_number},{branch_to_block},\
+                            {measure_block})")
 
                 def on_event(self):
                     """
