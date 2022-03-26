@@ -116,13 +116,15 @@ class TriggerConfiguration:
                 self._mycomms = None
                 self.branch = self.Branch()
                 self.configure = self.Config()
+                self.delay = self.Delay()
 
             def _update_comms(self):
                 self.branch._mycomms = self._mycomms
                 self.configure._mycomms = self._mycomms
+                self.delay._mycomms = self._mycomms
 
                 self.branch._update_comms()
-                
+
             class Branch():
                 """
                 Placeholder
@@ -520,17 +522,44 @@ class TriggerConfiguration:
                 def __init__(self):
                     self._mycomms = None
 
-                def constant(self):
+                def constant(self, block_number, delay_time):
                     """
-                    Placeholder
-                    """
-                    print(0)
+                    This function adds a constant delay to the execution\
+                    of a trigger model.
 
-                def dynamic(self):
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param delay_time: The amount of time to delay in\
+                        seconds (167 ns to 10 ks, or 0 for no delay).
+                    :return: None
                     """
-                    Placeholder
+                    self._mycomms.write(f"trigger.model.setblock(\
+                        {block_number},trigger.BLOCK_DELAY_CONSTANT,\
+                            {delay_time})")
+
+                def dynamic(self, block_number, user_delay, n=None):
                     """
-                    print(0)
+                    This function adds a user delay to the execution of\
+                    the trigger model.
+
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param user_delay: The number of the user delay:\
+                        TRIGGER_USER_DELAY_Mn, where n is the number of\
+                        the user delay (1 to 5) set by\
+                        smu.measure.userdelay[n] or TRIGGER_USER_DELAY_Sn,\
+                         where n is the number of the user delay (1 to 5)\
+                        set by smu.source.userdelay[n]
+                    :return: None
+                    """
+                    if user_delay is _smuconst.TRIGGER_USER_DELAY_M:
+                        self._mycomms.write(f"trigger.model.setblock({block_number}\
+                            ,trigger.BLOCK_DELAY_DYNAMIC,\
+                                trigger.USER_DELAY_M{n})")
+                    elif user_delay is _smuconst.TRIGGER_USER_DELAY_S:
+                        self._mycomms.write(f"trigger.model.setblock({block_number}\
+                            ,trigger.BLOCK_DELAY_DYNAMIC,\
+                                trigger.USER_DELAY_S{n})")
 
             def digital_io(self):
                 """
