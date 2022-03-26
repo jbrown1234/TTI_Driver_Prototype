@@ -230,7 +230,7 @@ class MeasureConfiguration:
             :param list_name:
             :return:
             """
-            self._mycomms.write(f"smu.measure.configlist.create({list_name}))")
+            self._mycomms.write(f"smu.measure.configlist.create(\"{list_name}\")")
 
         def delete(self, list_name, index=None):
             """
@@ -260,7 +260,7 @@ class MeasureConfiguration:
             the data; use one of the following,
                             * Comma (default): ,
                             * Semicolon: ;
-                            * New line: \n
+                            * New line: \\n
 
             :return:
             """
