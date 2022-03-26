@@ -561,35 +561,158 @@ class TriggerConfiguration:
                             ,trigger.BLOCK_DELAY_DYNAMIC,\
                                 trigger.USER_DELAY_S{n})")
 
-            def digital_io(self):
+            def digital_io(self, block_number, bit_pattern, bit_mask=None):
                 """
-                Placeholder
-                """
-                print(0)
+                This function adds a user delay to the execution of\
+                the trigger model.
 
-            def digitize(self):
+                :param block_number: The sequence of the block in the\
+                    trigger model.
+                :param bit_pattern: (int) Sets the value that specifies the\
+                    output line bit pattern (0 to 63)
+                :param bit_mask: (int) Specifies the bit mask; if omitted,\
+                    all lines are driven low (0 to 63)
+                :return: None
                 """
-                Placeholder
-                """
-                print(0)
+                if bit_mask is None:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_DIGITAL_IO,{bit_pattern})")
+                else:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_DIGITAL_IO,{bit_pattern},\
+                            {bit_mask})")
 
-            def log_event(self):
+            def digitize(self, block_number, buffer_name=None, count=None):
                 """
-                Placeholder
-                """
-                print(0)
+                This function defines a trigger block that makes or digitizes\
+                    a measurement.
 
-            def measure(self):
+                :param block_number: The sequence of the block in the\
+                    trigger model.
+                :param buffer_name: The name of the buffer, which must be an\
+                    existing buffer; if no buffer is defined, defbuffer1 is\
+                        used.
+                :param count: (int) The number of measure or digitize readings\
+                    to make before moving to the next block in the trigger\
+                    model. Options are: a specific value, infinite (run\
+                    continuously until stopped) - TRIGGER_COUNT_INFINITE, stop\
+                    infinite to stop the block - TRIGGER_COUNT_STOP, use most\
+                    recent count value - TRIGGER_COUNT_AUTO.
+                :return: None
                 """
-                Placeholder
-                """
-                print(0)
+                if buffer_name is None:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_MEASURE_DIGITIZE)")
+                else:
+                    if count is None:
+                        self._mycomms.write(f"trigger.model.setblock({block_number}\
+                            ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name})")
+                    else:
+                        if count is _smuconst.TRIGGER_COUNT_INFINITE:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name},\
+                                    trigger.COUNT_INFINITE)")
+                        elif count is _smuconst.TRIGGER_COUNT_STOP:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name},\
+                                    trigger.COUNT_STOP)")
+                        elif count is _smuconst.TRIGGER_COUNT_AUTO:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name},\
+                                    trigger.COUNT_AUTO)")
+                        else:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name},\
+                                    {count})")
 
-            def nop(self):
+            def log_event(self, block_number, event_number, n=1, message=None):
                 """
-                Placeholder
+                This function allows you to log an event in the event log when\
+                    the trigger model is running.
+
+                :param block_number: (int) The sequence of the block in the\
+                    trigger model.
+                :param event_number: The event number can be:
+                    TRIGGER_LOG_INFOn, TRIGGER_LOG_WARNn, TRIGGER_LOG_ERRORn,\
+                    where n is 1 to 4. You can define up to four of each type\
+                    You can also set TRIGGER_LOG_WARN_ABORT, which aborts the\
+                    trigger model immediately and posts a warning event log\
+                    message.
+                :param n: (int) A number 1 to 4 which specifies the\
+                    event_number type selection.
+                :param message: A string up to 31 characters.
+                :return: None
                 """
-                print(0)
+                if event_number is _smuconst.TRIGGER_LOG_ERROR:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_LOG_EVENT, trigger.LOG_ERROR{n},\
+                        \"{message}\")")
+                elif event_number is _smuconst.TRIGGER_LOG_INFO:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_LOG_EVENT, trigger.LOG_INFO{n},\
+                        \"{message}\")")
+                elif event_number is _smuconst.TRIGGER_LOG_WARN:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_LOG_EVENT, trigger.LOG_WARN{n},\
+                        \"{message}\")")
+                elif event_number is _smuconst.TRIGGER_LOG_WARN_ABORT:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_LOG_EVENT, trigger.LOG_WARN_ABORT,\
+                        \"{message}\")")
+
+            def measure(self, block_number, buffer_name=None, count=None):
+                """
+                This function defines a trigger block that makes or digitizes\
+                    a measurement.
+
+                :param block_number: (int) The sequence of the block in the\
+                    trigger model.
+                :param buffer_name: The name of the buffer, which must be an\
+                    existing buffer; if no buffer is defined, defbuffer1 is\
+                        used.
+                :param count: (int) The number of measure or digitize readings\
+                    to make before moving to the next block in the trigger\
+                    model. Options are: a specific value, infinite (run\
+                    continuously until stopped) - TRIGGER_COUNT_INFINITE, stop\
+                    infinite to stop the block - TRIGGER_COUNT_STOP, use most\
+                    recent count value - TRIGGER_COUNT_AUTO.
+                :return: None
+                """
+                if buffer_name is None:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_MEASURE_DIGITIZE)")
+                else:
+                    if count is None:
+                        self._mycomms.write(f"trigger.model.setblock({block_number}\
+                            ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name})")
+                    else:
+                        if count is _smuconst.TRIGGER_COUNT_INFINITE:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name},\
+                                    trigger.COUNT_INFINITE)")
+                        elif count is _smuconst.TRIGGER_COUNT_STOP:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name},\
+                                    trigger.COUNT_STOP)")
+                        elif count is _smuconst.TRIGGER_COUNT_AUTO:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name},\
+                                    trigger.COUNT_AUTO)")
+                        else:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_MEASURE_DIGITIZE,{buffer_name},\
+                                    {count})")
+
+            def nop(self, block_number):
+                """
+                This function creates a placeholder that performs no action\
+                in the trigger model; available only using remote commands.
+
+                :param block_number: (int) The sequence of the block in the\
+                    trigger model.
+                :return: None
+                """
+                self._mycomms.write(f"trigger.model.setblock({block_number},trigger.BLOCK_NOP)")
 
             def notify(self):
                 """
