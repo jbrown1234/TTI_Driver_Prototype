@@ -57,7 +57,7 @@ class SourceConfiguration:
             :param list_name:
             :return:
             """
-            self._mycomms.write(f"smu.source.configlist.create({list_name}))")
+            self._mycomms.write(f"smu.source.configlist.create(\"{list_name}\")")
 
         def delete(self, list_name, index=None):
             """
