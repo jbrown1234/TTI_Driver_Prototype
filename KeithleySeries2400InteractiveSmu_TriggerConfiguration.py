@@ -467,11 +467,51 @@ class TriggerConfiguration:
                                 {configuration_list}\",\"\
                                     {optional_configuration_list}\")")
 
-                def recall(self):
+                def recall(self, block_number, configuration_list,
+                           cl_index=None, optional_configuration_list=None,
+                           opt_cl_index=None):
                     """
-                    Placeholder
+                    This function recalls the system settings that are stored\
+                    in a source or measure configuration list, or both a\
+                    source and measure configuration list.
+
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param configuration_list: A string that defines the\
+                        source or measure configuration list to recall.
+                    :param cl_index: The index in the configuration list to\
+                        recall; default is 1
+                    :param optional_configuration_list: The name of the second\
+                        configuration list to recall the index from; must be\
+                            the opposite type of list than the first; for\
+                                example, if the first configuration list is a\
+                                    measure list, the second configuration\
+                                        list must be a source list.
+                    :param opt_cl_index: The index in the configuration list\
+                        to recall; default is 1
+                    :return: None
                     """
-                    print(0)
+                    if optional_configuration_list is None:
+                        if cl_index is None:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_CONFIG_RECALL,\
+                                    \"{configuration_list}\")")
+                        else:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_CONFIG_RECALL,\
+                                    \"{configuration_list}\",{cl_index})")
+                    else:
+                        if opt_cl_index is None:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_CONFIG_RECALL,\
+                                    \"{configuration_list}\",{cl_index},\
+                                        \"{optional_configuration_list}\")")
+                        else:
+                            self._mycomms.write(f"trigger.model.setblock({block_number}\
+                                ,trigger.BLOCK_CONFIG_RECALL,\
+                                    \"{configuration_list}\",{cl_index},\
+                                        \"{optional_configuration_list}\",\
+                                        {opt_cl_index})")
 
             class Delay():
                 """
