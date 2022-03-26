@@ -404,3 +404,23 @@ class SourceConfiguration:
         :return:
         """
         self._mycomms.write(f"smu.source.range={range_value}")
+
+    def userdelay(self, n, delay_time=None):
+        """
+        This attribute sets or gets a user-defined delay that you can use in\
+        the trigger model.
+
+        :param N: (int) The user delay to which this time applies (1 to 5)
+        :param delay_time: (float) The delay (0 for no delay, or 167 ns to\
+            10 ks). Default is none and if this keyword parameter is not\
+            passed in then the caller can expect the delay time to be\
+            returned.
+        :return: delay_time
+        """
+        if delay_time is None:
+            self._mycomms.write(f"delay_time = smu.source.userdelay[{n}]")
+            delay_time = float(self._mycomms.query("print(delay_time)"))
+            return delay_time
+        else:
+            self._mycomms.write(f"smu.source.userdelay[{n}] = {delay_time}")
+            return None
