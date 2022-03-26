@@ -122,7 +122,7 @@ class TriggerConfiguration:
                 self.configure._mycomms = self._mycomms
 
                 self.branch._update_comms()
-
+                
             class Branch():
                 """
                 Placeholder
@@ -408,17 +408,64 @@ class TriggerConfiguration:
                 def __init__(self):
                     self._mycomms = None
 
-                def next(self):
+                def next(self, block_number, configuration_list,
+                         optional_configuration_list=None):
                     """
-                    Placeholder
-                    """
-                    print(0)
+                    This function recalls the settings at the next index of a\
+                        source or measure configuration list, or both a source\
+                            and measure configuration list.
 
-                def previous(self):
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param configuration_list: A string that defines the\
+                        source or measure configuration list to recall.
+                    :param optional_configuration_list: The name of the second\
+                        configuration list to recall the index from; must be\
+                            the opposite type of list than the first; for\
+                                example, if the first configuration list is a\
+                                    measure list, the second configuration\
+                                        list must be a source list.
+                    :return: None
                     """
-                    Placeholder
+                    if optional_configuration_list is None:
+                        self._mycomms.write(f"trigger.model.setblock({block_number}\
+                            ,trigger.BLOCK_CONFIG_NEXT, \"\
+                                {configuration_list}\")")
+                    else:
+                        self._mycomms.write(f"trigger.model.setblock({block_number}\
+                            ,trigger.BLOCK_CONFIG_NEXT, \"\
+                                {configuration_list}\",\"\
+                                    {optional_configuration_list}\")")
+
+                def previous(self, block_number, configuration_list,
+                             optional_configuration_list=None):
                     """
-                    print(0)
+                    This function defines a trigger-model block that recalls\
+                    the settings stored at the previous index in a source or\
+                    measure configuration list, or both a source and measure\
+                    configuration list.
+
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param configuration_list: A string that defines the\
+                        source or measure configuration list to recall.
+                    :param optional_configuration_list: The name of the second\
+                        configuration list to recall the index from; must be\
+                            the opposite type of list than the first; for\
+                                example, if the first configuration list is a\
+                                    measure list, the second configuration\
+                                        list must be a source list.
+                    :return: None
+                    """
+                    if optional_configuration_list is None:
+                        self._mycomms.write(f"trigger.model.setblock({block_number}\
+                            ,trigger.BLOCK_CONFIG_PREV, \"\
+                                {configuration_list}\")")
+                    else:
+                        self._mycomms.write(f"trigger.model.setblock({block_number}\
+                            ,trigger.BLOCK_CONFIG_PREV, \"\
+                                {configuration_list}\",\"\
+                                    {optional_configuration_list}\")")
 
                 def recall(self):
                     """
