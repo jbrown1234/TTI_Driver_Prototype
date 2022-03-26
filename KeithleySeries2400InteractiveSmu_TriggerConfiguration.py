@@ -306,23 +306,81 @@ class TriggerConfiguration:
                             {limit_type_str},{limit_number},{branch_to_block},\
                             {measure_block})")
 
-                def on_event(self):
+                def on_event(self, block_number, event, branch_to_block,
+                             n=None):
                     """
-                    Placeholder
-                    """
-                    print(0)
+                    This function branches to a specified block when a\
+                        specified trigger event occurs.
 
-                def once(self):
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param event: The event that must occur before the\
+                        trigger model branches the specified block. Options\
+                        include TRIGGER_EVENT_BLENDERn, TRIGGER_EVENT_COMMAND,\
+                        TRIGGER_EVENT_DIGIOn, TRIGGER_EVENT_DISPLAY,\
+                        TRIGGER_EVENT_LANn, TRIGGER_EVENT_NONE,\
+                        TRIGGER_EVENT_NOTIFYn, TRIGGER_EVENT_SOURCE_LIMIT,\
+                        TRIGGER_EVENT_TIMERn, TRIGGER_EVENT_TSPLINKn.
+                    :param branch_to_block: The block number to execute when\
+                        the trigger model reaches the Branch Always block.
+                    :param n: (int) The number of either the BLENDER,\
+                        DIGIO, LAN, NOTIFY, TIMER, or TSPLINK event.
+                    :return: None
                     """
-                    Placeholder
-                    """
-                    print(0)
+                    if event == _smuconst.TRIGGER_EVENT_BLENDER:
+                        event_str = f"trigger.EVENT_BLENDER{n}"
+                    elif event == _smuconst.TRIGGER_EVENT_COMMAND:
+                        event_str = "trigger.EVENT_COMMAND"
+                    elif event == _smuconst.TRIGGER_EVENT_DIGIO:
+                        event_str = f"trigger.EVENT_DIGIO{n}"
+                    elif event == _smuconst.TRIGGER_EVENT_DISPLAY:
+                        event_str = "trigger.EVENT_DISPLAY"
+                    elif event == _smuconst.TRIGGER_EVENT_LAN:
+                        event_str = f"trigger.EVENT_LAN{n}"
+                    elif event == _smuconst.TRIGGER_EVENT_NONE:
+                        event_str = "trigger.EVENT_NONE"
+                    elif event == _smuconst.TRIGGER_EVENT_NOTIFY:
+                        event_str = f"trigger.EVENT_NOTIFY{n}"
+                    elif event == _smuconst.TRIGGER_EVENT_SOURCE_LIMIT:
+                        event_str = "trigger.EVENT_SOURCE_LIMIT"
+                    elif event == _smuconst.TRIGGER_EVENT_TIMER:
+                        event_str = f"trigger.EVENT_TIMER{n}"
+                    elif event == _smuconst.TRIGGER_EVENT_TSPLINK:
+                        event_str = f"trigger.EVENT_TSPLINK{n}"
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_BRANCH_ON_EVENT,{event_str},\
+                            {branch_to_block})")
 
-                def once_excluded(self):
+                def once(self, block_number, branch_to_block):
                     """
-                    Placeholder
+                    This function causes the trigger model to branch to a\
+                    specified building block the first time it is encountered\
+                    in the trigger model.
+
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param branch_to_block: The block number to execute when\
+                        the trigger model reaches the Branch Always block.
+                    :return: None
                     """
-                    print(0)
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_BRANCH_ONCE,{branch_to_block})")
+
+                def once_excluded(self, block_number, branch_to_block):
+                    """
+                    This function defines a trigger-model block that causes the\
+                        trigger model to go to a specified building block every\
+                            time the trigger model encounters it, except for\
+                                the first time.
+
+                    :param block_number: The sequence of the block in the\
+                        trigger model.
+                    :param branch_to_block: The block number to execute when\
+                        the trigger model reaches the Branch Always block.
+                    :return: None
+                    """
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_BRANCH_ONCE,{branch_to_block})")
 
             def buffer_clear(self):
                 """
