@@ -368,10 +368,10 @@ class TriggerConfiguration:
 
                 def once_excluded(self, block_number, branch_to_block):
                     """
-                    This function defines a trigger-model block that causes the\
-                        trigger model to go to a specified building block every\
-                            time the trigger model encounters it, except for\
-                                the first time.
+                    This function defines a trigger-model block that causes\
+                        the trigger model to go to a specified building block\
+                            every time the trigger model encounters it, except\
+                                for the first time.
 
                     :param block_number: The sequence of the block in the\
                         trigger model.
@@ -380,13 +380,26 @@ class TriggerConfiguration:
                     :return: None
                     """
                     self._mycomms.write(f"trigger.model.setblock({block_number}\
-                        ,trigger.BLOCK_BRANCH_ONCE,{branch_to_block})")
+                        ,trigger.BLOCK_BRANCH_ONCE_EXCLUDED,{branch_to_block})\
+                            ")
 
-            def buffer_clear(self):
+            def buffer_clear(self, block_number, buffer_name=None):
                 """
-                Placeholder
+                This function defines a trigger-model block that clears the\
+                    reading buffer.
+
+                :param block_number: The sequence of the block in the\
+                    trigger model.
+                :param branch_to_block: The block number to execute when\
+                    the trigger model reaches the Branch Always block.
+                :return: None
                 """
-                print(0)
+                if buffer_name is None:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_BUFFER_CLEAR)")
+                else:
+                    self._mycomms.write(f"trigger.model.setblock({block_number}\
+                        ,trigger.BLOCK_BUFFER_CLEAR, {buffer_name})")
 
             class Config():
                 """
