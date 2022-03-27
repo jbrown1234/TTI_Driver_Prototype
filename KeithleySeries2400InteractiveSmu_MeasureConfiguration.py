@@ -170,7 +170,7 @@ class MeasureConfiguration:
         @property
         def enable(self):
             """
-            This attribute enables or disables automatic updates to the 
+            This attribute enables or disables automatic updates to the
             internal reference measurements (autozero) of the instrument.
 
             :return: Either 1 (ON) or 0 (OFF)
@@ -230,7 +230,8 @@ class MeasureConfiguration:
             :param list_name:
             :return:
             """
-            self._mycomms.write(f"smu.measure.configlist.create(\"{list_name}\")")
+            self._mycomms.write(f"smu.measure.configlist.create(\
+                \"{list_name}\")")
 
         def delete(self, list_name, index=None):
             """
@@ -300,7 +301,7 @@ class MeasureConfiguration:
                     self._mycomms.write(
                         f"smu.measure.configlist.recall(\"{list_name}\",\
                         {index}),\"{source_list_name}\","
-                            f" {source_index})")
+                        f" {source_index})")
 
         def size(self, list_name):
             """
@@ -503,7 +504,7 @@ class MeasureConfiguration:
         def type(self):
             """
             This attribute gets the type of averaging filter that is used for
-            the selected measure function when the measurement filter is 
+            the selected measure function when the measurement filter is
             enabled.
 
             :return:
@@ -772,7 +773,7 @@ class MeasureConfiguration:
 
             :param value: The offset for the y = mx + b operation; the valid
             range is −1e12 to +1e12
-            :return: Present setting for the b (offset) factor of the mx+b 
+            :return: Present setting for the b (offset) factor of the mx+b
             math operation.
             """
             retconstval = None
@@ -1040,7 +1041,8 @@ class MeasureConfiguration:
         UNIT_AMP, UNIT_OHM, UNIT_VOLT, or UNIT_WATT
         """
         self._mycomms.write("unit_of_measure=smu.measure.unit")
-        unit_of_measure = self._mycomms.query("print(unit_of_measure)").rstrip()
+        unit_of_measure = self._mycomms.query("print(unit_of_\
+            measure)").rstrip()
         if "AMP" in unit_of_measure:
             return _smuconst.UNIT_AMP
         elif "OHM" in unit_of_measure:
@@ -1074,11 +1076,13 @@ class MeasureConfiguration:
 
     def userdelay(self, n, delay_time=None):
         """
-        This attribute sets or gets a user-defined delay that you can use in the trigger model.
+        This attribute sets or gets a user-defined delay that you can use in\
+        the trigger model.
+
         :param N: (int) The user delay to which this time applies (1 to 5)
-        :param delay_time: (float) The delay (0 for no delay, or 167 ns to 10 ks). Default is none
-        and if this keyword parameter is not passed in then the caller can expect the delay time
-        to be returned.
+        :param delay_time: (float) The delay (0 for no delay, or 167 ns to 10\
+            ks). Default is none, and if this keyword parameter is not passed\
+            in then the caller can expect the delay time to be returned.
         :return: delay_time
         """
         if delay_time is None:
