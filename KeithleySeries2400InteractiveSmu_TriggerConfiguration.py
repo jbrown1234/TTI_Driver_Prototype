@@ -712,31 +712,135 @@ class TriggerConfiguration:
                     trigger model.
                 :return: None
                 """
-                self._mycomms.write(f"trigger.model.setblock({block_number},trigger.BLOCK_NOP)")
+                self._mycomms.write(f"trigger.model.setblock({block_number},\
+                    trigger.BLOCK_NOP)")
 
-            def notify(self):
+            def notify(self, block_number, n):
                 """
-                Placeholder
-                """
-                print(0)
+                This function defines a trigger-model block that generates a\
+                trigger event and immediately continues to the next block.
 
-            def reset_branch_count(self):
+                :param block_number: (int) The sequence of the block in the\
+                    trigger model.
+                :param n: (int) The identification number of the\
+                    notification; 1 to 8.
+                :return: None
                 """
-                Placeholder
-                """
-                print(0)
+                self._mycomms.write(f"trigger.model.setblock({block_number},\
+                    trigger.BLOCK_NOTIFY, trigger.EVENT_NOTIFY{n})")
 
-            def source_output(self):
+            def reset_branch_count(self, block_number, counter_block_number):
                 """
-                Placeholder
-                """
-                print(0)
+                This function creates a block in the trigger model that\
+                resets a branch counter to 0.
 
-            def wait(self):
+                :param block_number: (int) The sequence of the block in the\
+                    trigger model.
+                :param counter_block_number: (int) The block number of the\
+                    counter that is to be reset.
+                :return: None
                 """
-                Placeholder
+                self._mycomms.write(f"trigger.model.setblock({block_number},\
+                    trigger.BLOCK_RESET_BRANCH_COUNT, {counter_block_number})")
+
+            def source_output(self, block_number, output_state):
                 """
-                print(0)
+                This function creates a block in the trigger model that\
+                resets a branch counter to 0.
+
+                :param block_number: (int) The sequence of the block in the\
+                    trigger model.
+                :param Output_state: (int) The block number of the\
+                    counter that is to be reset.
+                :return: None
+                """
+                if output_state is _smuconst.ON:
+                    outstate_str = "smu.ON"
+                if output_state is _smuconst.OFF:
+                    outstate_str = "smu.OFF"
+                self._mycomms.write(f"trigger.model.setblock({block_number},\
+                    trigger.BLOCK_SOURCE_OUTPUT, {outstate_str})")
+
+            def wait(self, block_number, event, n=None, clear=None, logic=None,
+                     event2=None, n2=None, event3=None, n3=None):
+                """
+                This function creates a block in the trigger model that\
+                resets a branch counter to 0.
+
+                :param block_number: (int) The sequence of the block in the\
+                    trigger model.
+                :param event: The event that must occur before the trigger\
+                    block allows trigger execution to continue.
+                :param clear: To clear previously detected trigger events when\
+                    entering the wait block use TRIGGER_CLEAR_ENTER. To\
+                    immediately act on any previously detected triggers and\
+                    not clear them (default) use TRIGGER_CLEAR_NEVER.
+                :param n: (int) The number of either the BLENDER,\
+                        DIGIO, LAN, NOTIFY, TIMER, or TSPLINK event.
+                :pararm logic: If each event must occur before the trigger\
+                    model continues use TRIGGER_WAIT_AND. If at least one of\
+                    the events must occur before the trigger model continues\
+                    use TRIGGER_WAIT_OR
+                :param event2: The event that must occur before the trigger\
+                    block allows trigger execution to continue.
+                :param n2: (int) The number of either the BLENDER,\
+                        DIGIO, LAN, NOTIFY, TIMER, or TSPLINK event.
+                :param event3: The event that must occur before the trigger\
+                    block allows trigger execution to continue.
+                :param n3: (int) The number of either the BLENDER,\
+                        DIGIO, LAN, NOTIFY, TIMER, or TSPLINK event.
+                :return: None
+                """
+                cmd_str = f"trigger.model.setblock({block_number},\
+                    trigger.BLOCK_WAIT, {self._get_trigger_event(event, n)}"
+
+                if (clear is _smuconst.TRIGGER_CLEAR_ENTER) or \
+                   (clear is _smuconst.TRIGGER_CLEAR_NEVER):
+                    cmd_str += f",{self._get_trigger_clear_string(clear)},\
+                        {self._get_trigger_wait_logic_string(logic)}"
+                    if event2:
+                        cmd_str += f",{self._get_trigger_event(event2, n2)}"
+                        if event3:
+                            cmd_str += f",\
+                                {self._get_trigger_event(event3, n3)}"
+
+                cmd_str += ")"
+
+                self._mycomms.write(cmd_str)
+
+            def _get_trigger_event(self, event, n=None):
+                if event is _smuconst.TRIGGER_EVENT_BLENDER:
+                    return f"trigger.EVENT_BLENDER{n}"
+                elif event is _smuconst.TRIGGER_EVENT_COMMAND:
+                    return "trigger.EVENT_COMMAND"
+                elif event == _smuconst.TRIGGER_EVENT_DIGIO:
+                    return f"trigger.EVENT_DIGIO{n}"
+                elif event == _smuconst.TRIGGER_EVENT_DISPLAY:
+                    return "trigger.EVENT_DISPLAY"
+                elif event == _smuconst.TRIGGER_EVENT_LAN:
+                    return f"trigger.EVENT_LAN{n}"
+                elif event == _smuconst.TRIGGER_EVENT_NONE:
+                    return "trigger.EVENT_NONE"
+                elif event == _smuconst.TRIGGER_EVENT_NOTIFY:
+                    return f"trigger.EVENT_NOTIFY{n}"
+                elif event == _smuconst.TRIGGER_EVENT_SOURCE_LIMIT:
+                    return "trigger.EVENT_SOURCE_LIMIT"
+                elif event == _smuconst.TRIGGER_EVENT_TIMER:
+                    return f"trigger.EVENT_TIMER{n}"
+                elif event == _smuconst.TRIGGER_EVENT_TSPLINK:
+                    return f"trigger.EVENT_TSPLINK{n}"
+
+            def _get_trigger_clear_string(self, clear_type):
+                if clear_type is _smuconst.TRIGGER_CLEAR_ENTER:
+                    return "trigger.CLEAR_ENTER"
+                if clear_type is _smuconst.TRIGGER_CLEAR_NEVER:
+                    return "trigger.CLEAR_NEVER"
+
+            def _get_trigger_wait_logic_string(self, logic):
+                if logic is _smuconst.TRIGGER_WAIT_AND:
+                    return "trigger.WAIT_AND"
+                if logic is _smuconst.TRIGGER_WAIT_OR:
+                    return "trigger.WAIT_OR"
 
         @property
         def state(self):
