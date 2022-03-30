@@ -26,6 +26,7 @@ import KeithleySeries2400InteractiveSmu_EventLogConfiguration as \
     eventlog_config
 import KeithleySeries2400InteractiveSmu_LocalNodeConfiguration as \
     localnode_config
+import KeithleySeries2400InteractiveSmu_TspLinkConfiguration as tsplink_config
 
 
 class KeithleySeries2400InteractiveSmu:
@@ -47,6 +48,7 @@ class KeithleySeries2400InteractiveSmu:
         self.source = source_config.SourceConfiguration()
         self.measure = measure_config.MeasureConfiguration()
         self.trigger = trigger_config.TriggerConfiguration()
+        self.tsplink = tsplink_config.TspLinkConfiguration()
 
     class InstrumentConnection(object):
         """
@@ -69,16 +71,19 @@ class KeithleySeries2400InteractiveSmu:
             self.source._mycomms = self.instrumentcomms
             self.measure._mycomms = self.instrumentcomms
             self.trigger._mycomms = self.instrumentcomms
+            self.tsplink._mycomms = self.instrumentcomms
             self.source.update_comms()
             self.measure.update_comms()
             self.trigger.update_comms()
             self.display.update_comms()
+            self.tsplink.update_comms()
         except:
             print("error")
 
     def reset(self):
         """
-        This function resets commands to their default settings and clears the buffers.
+        This function resets commands to their default settings and clears the\
+            buffers.
         :return: None
         """
         self.instrumentcomms.write("reset()")
