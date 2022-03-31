@@ -82,8 +82,6 @@ class TriggerConfiguration:
                 self._mycomms.write(f"trigger.model.load(\"DurationLoop\",\
                     {duration})")
 
-            print(0)
-
         def load_simple_loop(self, count, delay=None, buffer_name=None):
             """
             This function loads a trigger-model template configuration that\
