@@ -76,7 +76,7 @@ class KeithleySeries2400InteractiveSmu:
             self.measure.update_comms()
             self.trigger.update_comms()
             self.display.update_comms()
-            self.tsplink.update_comms()
+            # self.tsplink.update_comms()
         except:
             print("error")
 
