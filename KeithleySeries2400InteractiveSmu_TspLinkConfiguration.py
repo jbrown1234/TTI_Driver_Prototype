@@ -102,3 +102,15 @@ class TspLinkConfiguration:
                 self._mycomms.write("mode = tsplink.line[N].mode")
                 line_mode = self._mycomms.query("print(mode)")
                 return line_mode
+
+    @property
+    def state(self):
+        """
+        This attribute contains the group number of a TSP-Link node.
+
+        :param: None
+        :return group_number: The group number of the TSP-Link node (0 to 64)
+        """
+        self._mycomms.write("state = tsplink.state")
+        state = self._mycomms.query("print(state)")
+        return state
